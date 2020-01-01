@@ -1,6 +1,4 @@
 #line 1 "Tweak.x"
-UIImage *sbWallpaper;
-
 @interface UIAlertController (private)
 @property (readonly) UIView *_dimmingView;
 @end
@@ -37,21 +35,22 @@ UIImage *sbWallpaper;
 #define _LOGOS_RETURN_RETAINED
 #endif
 
-@class _UIDimmingKnockoutBackdropView; @class SBFStaticWallpaperView; @class UIAlertController; 
+@class UIAlertController; @class SBFStaticWallpaperView; @class _UIDimmingKnockoutBackdropView; 
 static void (*_logos_orig$_ungrouped$UIAlertController$viewWillAppear$)(_LOGOS_SELF_TYPE_NORMAL UIAlertController* _LOGOS_SELF_CONST, SEL, BOOL); static void _logos_method$_ungrouped$UIAlertController$viewWillAppear$(_LOGOS_SELF_TYPE_NORMAL UIAlertController* _LOGOS_SELF_CONST, SEL, BOOL); static void (*_logos_orig$_ungrouped$_UIDimmingKnockoutBackdropView$setBounds$)(_LOGOS_SELF_TYPE_NORMAL _UIDimmingKnockoutBackdropView* _LOGOS_SELF_CONST, SEL, CGRect); static void _logos_method$_ungrouped$_UIDimmingKnockoutBackdropView$setBounds$(_LOGOS_SELF_TYPE_NORMAL _UIDimmingKnockoutBackdropView* _LOGOS_SELF_CONST, SEL, CGRect); static void (*_logos_orig$_ungrouped$SBFStaticWallpaperView$setContentsRect$)(_LOGOS_SELF_TYPE_NORMAL SBFStaticWallpaperView* _LOGOS_SELF_CONST, SEL, CGRect); static void _logos_method$_ungrouped$SBFStaticWallpaperView$setContentsRect$(_LOGOS_SELF_TYPE_NORMAL SBFStaticWallpaperView* _LOGOS_SELF_CONST, SEL, CGRect); 
 
-#line 18 "Tweak.x"
+#line 16 "Tweak.x"
 
 
 static void _logos_method$_ungrouped$UIAlertController$viewWillAppear$(_LOGOS_SELF_TYPE_NORMAL UIAlertController* _LOGOS_SELF_CONST __unused self, SEL __unused _cmd, BOOL arg1){
-    BOOL useSpringBoardWallpaper = 0;
+    BOOL useSpringBoardWallpaper = 1;
     if (useSpringBoardWallpaper) {
+        UIImage *sbWallpaper = [UIImage imageWithContentsOfFile:@"/var/mobile/Documents/snell/homescreen.jpg"];
         UIImageView *sbWallpaperView = [[UIImageView alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
         [sbWallpaperView setImage:sbWallpaper];
         UIVisualEffectView *snellEffectView = [[UIVisualEffectView alloc] initWithEffect:[UIBlurEffect effectWithStyle:UIBlurEffectStyleLight]];
         [snellEffectView setFrame:[[UIScreen mainScreen] bounds]];
         [sbWallpaperView addSubview:snellEffectView];
-	    [self._dimmingView addSubview:snellEffectView];
+	    [self._dimmingView addSubview:sbWallpaperView];
     } else {
         UIVisualEffectView *snellEffectView = [[UIVisualEffectView alloc] initWithEffect:[UIBlurEffect effectWithStyle:UIBlurEffectStyleLight]];
         [snellEffectView setFrame:[[UIScreen mainScreen] bounds]];
@@ -74,7 +73,10 @@ static void _logos_method$_ungrouped$_UIDimmingKnockoutBackdropView$setBounds$(_
 
 
 static void _logos_method$_ungrouped$SBFStaticWallpaperView$setContentsRect$(_LOGOS_SELF_TYPE_NORMAL SBFStaticWallpaperView* _LOGOS_SELF_CONST __unused self, SEL __unused _cmd, CGRect arg1){
-    sbWallpaper = [self _displayedImage];
+    UIImage *sbWallpaper = [self _displayedImage];
+    NSData *sbWallpaperData = UIImageJPEGRepresentation(sbWallpaper, 1.0);
+    [[NSFileManager defaultManager] createDirectoryAtPath:@"/var/mobile/Documents/snell/" withIntermediateDirectories:TRUE attributes:nil error:nil];
+    [sbWallpaperData writeToFile:@"/var/mobile/Documents/snell/homescreen.jpg" atomically:TRUE];
     _logos_orig$_ungrouped$SBFStaticWallpaperView$setContentsRect$(self, _cmd, arg1);
 }
 
@@ -82,4 +84,4 @@ static void _logos_method$_ungrouped$SBFStaticWallpaperView$setContentsRect$(_LO
 
 static __attribute__((constructor)) void _logosLocalInit() {
 {Class _logos_class$_ungrouped$UIAlertController = objc_getClass("UIAlertController"); MSHookMessageEx(_logos_class$_ungrouped$UIAlertController, @selector(viewWillAppear:), (IMP)&_logos_method$_ungrouped$UIAlertController$viewWillAppear$, (IMP*)&_logos_orig$_ungrouped$UIAlertController$viewWillAppear$);Class _logos_class$_ungrouped$_UIDimmingKnockoutBackdropView = objc_getClass("_UIDimmingKnockoutBackdropView"); MSHookMessageEx(_logos_class$_ungrouped$_UIDimmingKnockoutBackdropView, @selector(setBounds:), (IMP)&_logos_method$_ungrouped$_UIDimmingKnockoutBackdropView$setBounds$, (IMP*)&_logos_orig$_ungrouped$_UIDimmingKnockoutBackdropView$setBounds$);Class _logos_class$_ungrouped$SBFStaticWallpaperView = objc_getClass("SBFStaticWallpaperView"); MSHookMessageEx(_logos_class$_ungrouped$SBFStaticWallpaperView, @selector(setContentsRect:), (IMP)&_logos_method$_ungrouped$SBFStaticWallpaperView$setContentsRect$, (IMP*)&_logos_orig$_ungrouped$SBFStaticWallpaperView$setContentsRect$);} }
-#line 57 "Tweak.x"
+#line 59 "Tweak.x"

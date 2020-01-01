@@ -1,5 +1,3 @@
-UIImage *sbWallpaper;
-
 @interface UIAlertController (private)
 @property (readonly) UIView *_dimmingView;
 @end
@@ -18,14 +16,15 @@ UIImage *sbWallpaper;
 %hook UIAlertController
 
 -(void)viewWillAppear:(BOOL)arg1{
-    BOOL useSpringBoardWallpaper = 0;
+    BOOL useSpringBoardWallpaper = 1;
     if (useSpringBoardWallpaper) {
+        UIImage *sbWallpaper = [UIImage imageWithContentsOfFile:@"/var/mobile/Documents/snell/lockscreen.jpg"];
         UIImageView *sbWallpaperView = [[UIImageView alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
         [sbWallpaperView setImage:sbWallpaper];
         UIVisualEffectView *snellEffectView = [[UIVisualEffectView alloc] initWithEffect:[UIBlurEffect effectWithStyle:UIBlurEffectStyleLight]];
         [snellEffectView setFrame:[[UIScreen mainScreen] bounds]];
         [sbWallpaperView addSubview:snellEffectView];
-	    [self._dimmingView addSubview:snellEffectView];
+	    [self._dimmingView addSubview:sbWallpaperView];
     } else {
         UIVisualEffectView *snellEffectView = [[UIVisualEffectView alloc] initWithEffect:[UIBlurEffect effectWithStyle:UIBlurEffectStyleLight]];
         [snellEffectView setFrame:[[UIScreen mainScreen] bounds]];
@@ -48,7 +47,10 @@ UIImage *sbWallpaper;
 %hook SBFStaticWallpaperView
 
 -(void)setContentsRect:(CGRect)arg1{
-    sbWallpaper = [self _displayedImage];
+    UIImage *sbWallpaper = [self _displayedImage];
+    NSData *sbWallpaperData = UIImageJPEGRepresentation(sbWallpaper, 1.0);
+    [[NSFileManager defaultManager] createDirectoryAtPath:@"/var/mobile/Documents/snell/" withIntermediateDirectories:TRUE attributes:nil error:nil];
+    [sbWallpaperData writeToFile:@"/var/mobile/Documents/snell/lockscreen.jpg" atomically:TRUE];
     %orig;
 }
 
