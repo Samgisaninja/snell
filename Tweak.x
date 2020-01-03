@@ -4,8 +4,12 @@ extern CFArrayRef CPBitmapCreateImagesFromData(CFDataRef cpbitmap, void*, int, v
 @property (readonly) UIView *_dimmingView;
 @end
 
+@interface _UIInterfaceActionVibrantSeparatorView : UIView
+@end
+
 @interface UIView (private)
 @property NSArray *allSubviews;
+-(id)_viewControllerForAncestor;
 @end
 
 @interface _UIDimmingKnockoutBackdropView : UIView
@@ -45,6 +49,16 @@ extern CFArrayRef CPBitmapCreateImagesFromData(CFDataRef cpbitmap, void*, int, v
 }
 
 %end
+
+%hook _UIInterfaceActionVibrantSeparatorView
+
+-(void)_setupEffectView{
+    [self setHidden:TRUE];
+    %orig;
+}
+
+%end
+
 
 %hook SpringBoard
 
