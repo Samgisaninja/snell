@@ -4,12 +4,15 @@ extern CFArrayRef CPBitmapCreateImagesFromData(CFDataRef cpbitmap, void*, int, v
 @property (readonly) UIView *_dimmingView;
 @end
 
+@interface _UIAlertControllerActionView : UIView
+-(void)setBackgroundColor:(UIColor *)arg1;
+@end
+
 @interface _UIInterfaceActionVibrantSeparatorView : UIView
 @end
 
 @interface UIView (private)
 @property NSArray *allSubviews;
--(id)_viewControllerForAncestor;
 @end
 
 @interface _UIDimmingKnockoutBackdropView : UIView
@@ -55,6 +58,27 @@ extern CFArrayRef CPBitmapCreateImagesFromData(CFDataRef cpbitmap, void*, int, v
 -(void)_setupEffectView{
     [self setHidden:TRUE];
     %orig;
+}
+
+%end
+
+
+%hook _UIAlertControllerActionView
+
+
+-(void)setAlertController:(UIAlertController*)arg1{
+    [self setBackgroundColor:[UIColor colorWithRed:(0.0/255.0) green:(0.0/255.0) blue:(0.0/255.0) alpha:0.3]];
+    %orig;
+}
+
+-(void)setHighlighted:(BOOL)arg1{
+    if (arg1) {
+        [self setBackgroundColor:[UIColor greenColor]];
+        %orig;
+    } else {
+        [self setBackgroundColor:[UIColor colorWithRed:(0.0/255.0) green:(0.0/255.0) blue:(0.0/255.0) alpha:0.3]];
+        %orig;
+    }
 }
 
 %end
