@@ -1,4 +1,9 @@
 extern CFArrayRef CPBitmapCreateImagesFromData(CFDataRef cpbitmap, void*, int, void*);
+UIAlertController *currentAlert;
+
+@interface UIApplication (private)
+-(UIWindow *)keyWindow;
+@end
 
 @interface UIAlertController (private)
 @property (readonly) UIView *_dimmingView;
@@ -22,6 +27,9 @@ extern CFArrayRef CPBitmapCreateImagesFromData(CFDataRef cpbitmap, void*, int, v
 -(UIImage *)_displayedImage;
 @end
 
+#pragma mark Appearance
+
+
 %hook UIAlertController
 
 -(void)viewWillAppear:(BOOL)arg1{
@@ -39,6 +47,7 @@ extern CFArrayRef CPBitmapCreateImagesFromData(CFDataRef cpbitmap, void*, int, v
         [snellEffectView setFrame:[[UIScreen mainScreen] bounds]];
         [self._dimmingView addSubview:snellEffectView];
     }
+    currentAlert = self;
     %orig;
 }
 
@@ -117,6 +126,56 @@ extern CFArrayRef CPBitmapCreateImagesFromData(CFDataRef cpbitmap, void*, int, v
     NSData *darkHomeWallDataWrite = UIImageJPEGRepresentation(darkSbWallpaper, 1.0);
     [darkHomeWallDataWrite writeToFile:@"/var/mobile/Documents/snell/Home-dark.jpg" atomically:TRUE];
     %orig;
+}
+
+%end
+
+#pragma mark Remembering Actions
+
+
+%hook UIAlertAction
+
++(id)actionWithTitle:(NSString *)arg1 style:(long long)arg2 handler:(void (^)(void))arg3{
+    if (![[currentAlert title] isEqualToString:@"Snell: Remember this action?"]){
+        if (![[currentAlert message] isEqualToString:@"Would you like to remember this decision in the future?"]){
+            if (arg3 == nil) {
+                void(^newCompletionBlock)(void) = ^{
+                    NSLog(@"%@", [NSString stringWithFormat:@"SNELL: Alert title was: %@\n Message was: %@\n chosen action was: %@\n", [currentAlert title], [currentAlert message], arg1]);
+                    UIAlertController *rememberMeController = [UIAlertController alertControllerWithTitle:@"Snell: Remember this action?" message:@"Would you like to remember this decision in the future?" preferredStyle:UIAlertControllerStyleAlert];
+                    UIAlertAction *rememberAction = [UIAlertAction actionWithTitle:@"Yes" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+                        NSMutableDictionary *brainDictionary = [NSMutableDictionary dictionaryWithDictionary:[NSDictionary dictionaryWithContentsOfFile:@"/System/Library/PreferenceBundles/snellprefs.bundle/brain.plist"]];
+                        [brain setObject:arg1 forKey:[NSString stringWithFormat:@"%@+%@", [currentAlert title], [currentAlert message]]];
+
+                    }];
+                    UIAlertAction *forgetAction = [UIAlertAction actionWithTitle:@"No" style:UIAlertActionStyleDefault handler:nil];
+                    [rememberMeController addAction:rememberAction];
+                    [rememberMeController addAction:forgetAction];
+                    [[[[UIApplication sharedApplication] keyWindow] rootViewController] presentViewController:rememberMeController animated:TRUE completion:nil];
+                };
+                return %orig(arg1, arg2, newCompletionBlock);
+            } else {
+                void(^newCompletionBlock)(void) = ^{
+                    arg3();
+                    NSLog(@"%@", [NSString stringWithFormat:@"SNELL: Alert title was: %@\n Message was: %@\n chosen action was: %@\n", [currentAlert title], [currentAlert message], arg1]);
+                    UIAlertController *rememberMeController = [UIAlertController alertControllerWithTitle:@"Snell: Remember this action?" message:@"Would you like to remember this decision in the future?" preferredStyle:UIAlertControllerStyleAlert];
+                    UIAlertAction *rememberAction = [UIAlertAction actionWithTitle:@"Yes" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+                        NSMutableDictionary *brainDictionary = [NSMutableDictionary dictionaryWithDictionary:[NSDictionary dictionaryWithContentsOfFile:@"/System/Library/PreferenceBundles/snellprefs.bundle/brain.plist"]];
+                        [brain setObject:arg1 forKey:[NSString stringWithFormat:@"%@+%@", [currentAlert title], [currentAlert message]]];
+                        
+                    }];
+                    UIAlertAction *forgetAction = [UIAlertAction actionWithTitle:@"No" style:UIAlertActionStyleDefault handler:nil];
+                    [rememberMeController addAction:rememberAction];
+                    [rememberMeController addAction:forgetAction];
+                    [[[[UIApplication sharedApplication] keyWindow] rootViewController] presentViewController:rememberMeController animated:TRUE completion:nil];
+                };
+                return %orig(arg1, arg2, newCompletionBlock);
+            }
+        } else {
+            return %orig;
+        }
+    } else {
+        return %orig;
+    }
 }
 
 %end

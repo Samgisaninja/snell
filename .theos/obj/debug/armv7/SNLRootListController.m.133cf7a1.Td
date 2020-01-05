@@ -1,0 +1,21 @@
+/Users/samgardner/Documents/snell/.theos/obj/debug/armv7/SNLRootListController.m.133cf7a1.o: \
+  SNLRootListController.m /Users/samgardner/theos/Prefix.pch \
+  /Users/samgardner/theos/include/_Prefix/BackwardsCompat.h \
+  /Users/samgardner/theos/include/_Prefix/IOSMacros.h \
+  /Users/samgardner/theos/include/HBLog.h SNLRootListController.h \
+  /Users/samgardner/theos/include/Preferences/PSListController.h \
+  /Users/samgardner/theos/include/Preferences/PSViewController.h
+
+/Users/samgardner/theos/Prefix.pch:
+
+/Users/samgardner/theos/include/_Prefix/BackwardsCompat.h:
+
+/Users/samgardner/theos/include/_Prefix/IOSMacros.h:
+
+/Users/samgardner/theos/include/HBLog.h:
+
+SNLRootListController.h:
+
+/Users/samgardner/theos/include/Preferences/PSListController.h:
+
+/Users/samgardner/theos/include/Preferences/PSViewController.h:
