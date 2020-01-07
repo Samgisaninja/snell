@@ -1,7 +1,14 @@
 #line 1 "Tweak.x"
+#import <Cephei/HBPreferences.h>
+
 extern CFArrayRef CPBitmapCreateImagesFromData(CFDataRef cpbitmap, void*, int, void*);
-NSString *alertTitle;
-NSString *alertMessage;
+UIAlertController *currentAlert;
+BOOL enabled;
+NSString *useWallpaper;
+NSString *blurStyle;
+UIColor *alertActionBackgroundColor;
+UIColor *alertActionHighlightColor;
+NSMutableDictionary *brain;
 
 @interface UIApplication (private)
 -(UIWindow *)keyWindow;
@@ -32,6 +39,7 @@ NSString *alertMessage;
 #pragma mark Appearance
 
 
+
 #include <substrate.h>
 #if defined(__clang__)
 #if __has_feature(objc_arc)
@@ -52,29 +60,54 @@ NSString *alertMessage;
 #define _LOGOS_RETURN_RETAINED
 #endif
 
-@class _UIDimmingKnockoutBackdropView; @class SpringBoard; @class _UIAlertControllerActionView; @class UIAlertAction; @class UIAlertController; @class _UIInterfaceActionVibrantSeparatorView; 
+@class _UIAlertControllerActionView; @class _UIInterfaceActionVibrantSeparatorView; @class UIAlertAction; @class SpringBoard; @class UIAlertController; @class _UIDimmingKnockoutBackdropView; 
 static void (*_logos_orig$_ungrouped$UIAlertController$viewWillAppear$)(_LOGOS_SELF_TYPE_NORMAL UIAlertController* _LOGOS_SELF_CONST, SEL, BOOL); static void _logos_method$_ungrouped$UIAlertController$viewWillAppear$(_LOGOS_SELF_TYPE_NORMAL UIAlertController* _LOGOS_SELF_CONST, SEL, BOOL); static void (*_logos_orig$_ungrouped$_UIDimmingKnockoutBackdropView$setBounds$)(_LOGOS_SELF_TYPE_NORMAL _UIDimmingKnockoutBackdropView* _LOGOS_SELF_CONST, SEL, CGRect); static void _logos_method$_ungrouped$_UIDimmingKnockoutBackdropView$setBounds$(_LOGOS_SELF_TYPE_NORMAL _UIDimmingKnockoutBackdropView* _LOGOS_SELF_CONST, SEL, CGRect); static void (*_logos_orig$_ungrouped$_UIInterfaceActionVibrantSeparatorView$_setupEffectView)(_LOGOS_SELF_TYPE_NORMAL _UIInterfaceActionVibrantSeparatorView* _LOGOS_SELF_CONST, SEL); static void _logos_method$_ungrouped$_UIInterfaceActionVibrantSeparatorView$_setupEffectView(_LOGOS_SELF_TYPE_NORMAL _UIInterfaceActionVibrantSeparatorView* _LOGOS_SELF_CONST, SEL); static void (*_logos_orig$_ungrouped$_UIAlertControllerActionView$setAlertController$)(_LOGOS_SELF_TYPE_NORMAL _UIAlertControllerActionView* _LOGOS_SELF_CONST, SEL, UIAlertController*); static void _logos_method$_ungrouped$_UIAlertControllerActionView$setAlertController$(_LOGOS_SELF_TYPE_NORMAL _UIAlertControllerActionView* _LOGOS_SELF_CONST, SEL, UIAlertController*); static void (*_logos_orig$_ungrouped$_UIAlertControllerActionView$setHighlighted$)(_LOGOS_SELF_TYPE_NORMAL _UIAlertControllerActionView* _LOGOS_SELF_CONST, SEL, BOOL); static void _logos_method$_ungrouped$_UIAlertControllerActionView$setHighlighted$(_LOGOS_SELF_TYPE_NORMAL _UIAlertControllerActionView* _LOGOS_SELF_CONST, SEL, BOOL); static void (*_logos_orig$_ungrouped$SpringBoard$applicationDidFinishLaunching$)(_LOGOS_SELF_TYPE_NORMAL SpringBoard* _LOGOS_SELF_CONST, SEL, id); static void _logos_method$_ungrouped$SpringBoard$applicationDidFinishLaunching$(_LOGOS_SELF_TYPE_NORMAL SpringBoard* _LOGOS_SELF_CONST, SEL, id); static id (*_logos_meta_orig$_ungrouped$UIAlertAction$actionWithTitle$style$handler$)(_LOGOS_SELF_TYPE_NORMAL Class _LOGOS_SELF_CONST, SEL, NSString *, long long, void (^)(void)); static id _logos_meta_method$_ungrouped$UIAlertAction$actionWithTitle$style$handler$(_LOGOS_SELF_TYPE_NORMAL Class _LOGOS_SELF_CONST, SEL, NSString *, long long, void (^)(void)); 
 
-#line 33 "Tweak.x"
+#line 41 "Tweak.x"
 
 
 static void _logos_method$_ungrouped$UIAlertController$viewWillAppear$(_LOGOS_SELF_TYPE_NORMAL UIAlertController* _LOGOS_SELF_CONST __unused self, SEL __unused _cmd, BOOL arg1){
-    BOOL useSpringBoardWallpaper = 1;
-    if (useSpringBoardWallpaper) {
-        UIImage *sbWallpaper = [UIImage imageWithContentsOfFile:@"/var/mobile/Documents/snell/home.jpg"];
-        UIImageView *sbWallpaperView = [[UIImageView alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-        [sbWallpaperView setImage:sbWallpaper];
-        UIVisualEffectView *snellEffectView = [[UIVisualEffectView alloc] initWithEffect:[UIBlurEffect effectWithStyle:UIBlurEffectStyleLight]];
+    if (enabled) {
+        UIVisualEffectView *snellEffectView;
+        if ([blurStyle isEqualToString:@"ultraLightStyle"]) {
+            snellEffectView = [[UIVisualEffectView alloc] initWithEffect:[UIBlurEffect effectWithStyle:UIBlurEffectStyleExtraLight]];
+        } else if ([blurStyle isEqualToString:@"lightStyle"]) {
+            snellEffectView = [[UIVisualEffectView alloc] initWithEffect:[UIBlurEffect effectWithStyle:UIBlurEffectStyleLight]];
+        } else if ([blurStyle isEqualToString:@"regularStyle"]) {
+            snellEffectView = [[UIVisualEffectView alloc] initWithEffect:[UIBlurEffect effectWithStyle:UIBlurEffectStyleRegular]];
+        } else if ([blurStyle isEqualToString:@"prominentStyle"]) {
+            snellEffectView = [[UIVisualEffectView alloc] initWithEffect:[UIBlurEffect effectWithStyle:UIBlurEffectStyleProminent]];
+        } else if ([blurStyle isEqualToString:@"darkStyle"]) {
+            snellEffectView = [[UIVisualEffectView alloc] initWithEffect:[UIBlurEffect effectWithStyle:UIBlurEffectStyleDark]];
+        } else {
+            snellEffectView = [[UIVisualEffectView alloc] init];
+        }
         [snellEffectView setFrame:[[UIScreen mainScreen] bounds]];
-        [sbWallpaperView addSubview:snellEffectView];
-	    [self._dimmingView addSubview:sbWallpaperView];
-    } else {
-        UIVisualEffectView *snellEffectView = [[UIVisualEffectView alloc] initWithEffect:[UIBlurEffect effectWithStyle:UIBlurEffectStyleLight]];
-        [snellEffectView setFrame:[[UIScreen mainScreen] bounds]];
-        [self._dimmingView addSubview:snellEffectView];
+        if ([useWallpaper isEqualToString:@"appBackground"]) {
+            [self._dimmingView addSubview:snellEffectView];
+        } else if ([useWallpaper isEqualToString:@"homescreenBackground"]) {
+            if ([[NSFileManager defaultManager] fileExistsAtPath:@"/var/mobile/Documents/snell/home.jpg"]) {
+                UIImage *sbWallpaper = [UIImage imageWithContentsOfFile:@"/var/mobile/Documents/snell/home.jpg"];
+                UIImageView *sbWallpaperView = [[UIImageView alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+                [sbWallpaperView setImage:sbWallpaper];
+                [sbWallpaperView addSubview:snellEffectView];
+	            [self._dimmingView addSubview:sbWallpaperView];
+            } else {
+                UIImage *sbWallpaper = [UIImage imageWithContentsOfFile:@"/var/mobile/Documents/snell/lock.jpg"];
+                UIImageView *sbWallpaperView = [[UIImageView alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+                [sbWallpaperView setImage:sbWallpaper];
+                [sbWallpaperView addSubview:snellEffectView];
+	            [self._dimmingView addSubview:sbWallpaperView];
+            }
+        } else if ([useWallpaper isEqualToString:@"lockscreenBackground"]) {
+            UIImage *sbWallpaper = [UIImage imageWithContentsOfFile:@"/var/mobile/Documents/snell/lock.jpg"];
+            UIImageView *sbWallpaperView = [[UIImageView alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+            [sbWallpaperView setImage:sbWallpaper];
+            [sbWallpaperView addSubview:snellEffectView];
+	        [self._dimmingView addSubview:sbWallpaperView];
+        }
     }
-    alertTitle = [self title];
-    alertMessage = [self message];
+    currentAlert = self;
     _logos_orig$_ungrouped$UIAlertController$viewWillAppear$(self, _cmd, arg1);
 }
 
@@ -83,7 +116,9 @@ static void _logos_method$_ungrouped$UIAlertController$viewWillAppear$(_LOGOS_SE
 
 
 static void _logos_method$_ungrouped$_UIDimmingKnockoutBackdropView$setBounds$(_LOGOS_SELF_TYPE_NORMAL _UIDimmingKnockoutBackdropView* _LOGOS_SELF_CONST __unused self, SEL __unused _cmd, CGRect arg1){
-    [self setHidden:TRUE];
+    if (enabled) {
+        [self setHidden:TRUE];
+    }
     _logos_orig$_ungrouped$_UIDimmingKnockoutBackdropView$setBounds$(self, _cmd, arg1);
 }
 
@@ -92,7 +127,9 @@ static void _logos_method$_ungrouped$_UIDimmingKnockoutBackdropView$setBounds$(_
 
 
 static void _logos_method$_ungrouped$_UIInterfaceActionVibrantSeparatorView$_setupEffectView(_LOGOS_SELF_TYPE_NORMAL _UIInterfaceActionVibrantSeparatorView* _LOGOS_SELF_CONST __unused self, SEL __unused _cmd){
-    [self setHidden:TRUE];
+    if (enabled) {
+        [self setHidden:TRUE];
+    }
     _logos_orig$_ungrouped$_UIInterfaceActionVibrantSeparatorView$_setupEffectView(self, _cmd);
 }
 
@@ -103,18 +140,21 @@ static void _logos_method$_ungrouped$_UIInterfaceActionVibrantSeparatorView$_set
 
 
 static void _logos_method$_ungrouped$_UIAlertControllerActionView$setAlertController$(_LOGOS_SELF_TYPE_NORMAL _UIAlertControllerActionView* _LOGOS_SELF_CONST __unused self, SEL __unused _cmd, UIAlertController* arg1){
-    [self setBackgroundColor:[UIColor colorWithRed:(0.0/255.0) green:(0.0/255.0) blue:(0.0/255.0) alpha:0.3]];
+    if (enabled) {
+        [self setBackgroundColor:[UIColor colorWithRed:(0.0/255.0) green:(0.0/255.0) blue:(0.0/255.0) alpha:0.3]];
+    }
     _logos_orig$_ungrouped$_UIAlertControllerActionView$setAlertController$(self, _cmd, arg1);
 }
 
 static void _logos_method$_ungrouped$_UIAlertControllerActionView$setHighlighted$(_LOGOS_SELF_TYPE_NORMAL _UIAlertControllerActionView* _LOGOS_SELF_CONST __unused self, SEL __unused _cmd, BOOL arg1){
-    if (arg1) {
-        [self setBackgroundColor:[UIColor greenColor]];
-        _logos_orig$_ungrouped$_UIAlertControllerActionView$setHighlighted$(self, _cmd, arg1);
-    } else {
-        [self setBackgroundColor:[UIColor colorWithRed:(0.0/255.0) green:(0.0/255.0) blue:(0.0/255.0) alpha:0.3]];
-        _logos_orig$_ungrouped$_UIAlertControllerActionView$setHighlighted$(self, _cmd, arg1);
+    if (enabled) {
+        if (arg1) {
+            [self setBackgroundColor:[UIColor greenColor]]; 
+        } else {
+            [self setBackgroundColor:[UIColor colorWithRed:(0.0/255.0) green:(0.0/255.0) blue:(0.0/255.0) alpha:0.3]]; 
+        }
     }
+    _logos_orig$_ungrouped$_UIAlertControllerActionView$setHighlighted$(self, _cmd, arg1);
 }
 
 
@@ -162,38 +202,42 @@ static void _logos_method$_ungrouped$SpringBoard$applicationDidFinishLaunching$(
 
 
 
-
-
 static id _logos_meta_method$_ungrouped$UIAlertAction$actionWithTitle$style$handler$(_LOGOS_SELF_TYPE_NORMAL Class _LOGOS_SELF_CONST __unused self, SEL __unused _cmd, NSString * arg1, long long arg2, void (^arg3)(void)){
-    if (![alertTitle isEqualToString:@"Snell: Remember this action?"]){
-        if (![alertMessage isEqualToString:@"Would you like to remember this decision in the future?"]){
-            if (arg3 == nil) {
-                void(^newCompletionBlock)(void) = ^{
-                    NSLog(@"%@", [NSString stringWithFormat:@"SNELL: Alert title was: %@\n Message was: %@\n chosen action was: %@\n", alertTitle, alertMessage, arg1]);
-                    UIAlertController *rememberMeController = [UIAlertController alertControllerWithTitle:@"Snell: Remember this action?" message:@"Would you like to remember this decision in the future?" preferredStyle:UIAlertControllerStyleAlert];
-                    UIAlertAction *rememberAction = [UIAlertAction actionWithTitle:@"Yes" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-                        NSLog(@"SNELL: User elected to remember action decision");
-                    }];
-                    UIAlertAction *forgetAction = [UIAlertAction actionWithTitle:@"No" style:UIAlertActionStyleDefault handler:nil];
-                    [rememberMeController addAction:rememberAction];
-                    [rememberMeController addAction:forgetAction];
-                    [[[[UIApplication sharedApplication] keyWindow] rootViewController] presentViewController:rememberMeController animated:TRUE completion:nil];
-                };
-                return _logos_meta_orig$_ungrouped$UIAlertAction$actionWithTitle$style$handler$(self, _cmd, arg1, arg2, newCompletionBlock);
+    if (enabled) {
+        if (![[currentAlert title] isEqualToString:@"Snell: Remember this action?"]){
+            if (![[currentAlert message] isEqualToString:@"Would you like to remember this decision in the future?"]){
+                if (arg3 == nil) {
+                    void(^newCompletionBlock)(void) = ^{
+                        NSLog(@"%@", [NSString stringWithFormat:@"SNELL: Alert title was: %@\n Message was: %@\n chosen action was: %@\n", [currentAlert title], [currentAlert message], arg1]);
+                        UIAlertController *rememberMeController = [UIAlertController alertControllerWithTitle:@"Snell: Remember this action?" message:@"Would you like to remember this decision in the future?" preferredStyle:UIAlertControllerStyleAlert];
+                        UIAlertAction *rememberAction = [UIAlertAction actionWithTitle:@"Yes" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+                            [brain setObject:arg1 forKey:[NSString stringWithFormat:@"%@+%@", [currentAlert title], [currentAlert message]]];
+                            
+                        }];
+                        UIAlertAction *forgetAction = [UIAlertAction actionWithTitle:@"No" style:UIAlertActionStyleDefault handler:nil];
+                        [rememberMeController addAction:rememberAction];
+                        [rememberMeController addAction:forgetAction];
+                        [[[[UIApplication sharedApplication] keyWindow] rootViewController] presentViewController:rememberMeController animated:TRUE completion:nil];
+                    };
+                    return _logos_meta_orig$_ungrouped$UIAlertAction$actionWithTitle$style$handler$(self, _cmd, arg1, arg2, newCompletionBlock);
+                } else {
+                    void(^newCompletionBlock)(void) = ^{
+                        arg3();
+                        NSLog(@"%@", [NSString stringWithFormat:@"SNELL: Alert title was: %@\n Message was: %@\n chosen action was: %@\n", [currentAlert title], [currentAlert message], arg1]);
+                        UIAlertController *rememberMeController = [UIAlertController alertControllerWithTitle:@"Snell: Remember this action?" message:@"Would you like to remember this decision in the future?" preferredStyle:UIAlertControllerStyleAlert];
+                        UIAlertAction *rememberAction = [UIAlertAction actionWithTitle:@"Yes" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+                            [brain setObject:arg1 forKey:[NSString stringWithFormat:@"%@+%@", [currentAlert title], [currentAlert message]]];
+                            
+                        }];
+                        UIAlertAction *forgetAction = [UIAlertAction actionWithTitle:@"No" style:UIAlertActionStyleDefault handler:nil];
+                        [rememberMeController addAction:rememberAction];
+                        [rememberMeController addAction:forgetAction];
+                        [[[[UIApplication sharedApplication] keyWindow] rootViewController] presentViewController:rememberMeController animated:TRUE completion:nil];
+                    };
+                    return _logos_meta_orig$_ungrouped$UIAlertAction$actionWithTitle$style$handler$(self, _cmd, arg1, arg2, newCompletionBlock);
+                }
             } else {
-                void(^newCompletionBlock)(void) = ^{
-                    arg3();
-                    NSLog(@"%@", [NSString stringWithFormat:@"SNELL: Alert title was: %@\n Message was: %@\n chosen action was: %@\n", alertTitle, alertMessage, arg1]);
-                    UIAlertController *rememberMeController = [UIAlertController alertControllerWithTitle:@"Snell: Remember this action?" message:@"Would you like to remember this decision in the future?" preferredStyle:UIAlertControllerStyleAlert];
-                    UIAlertAction *rememberAction = [UIAlertAction actionWithTitle:@"Yes" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-                        NSLog(@"SNELL: User elected to remember action decision");
-                    }];
-                    UIAlertAction *forgetAction = [UIAlertAction actionWithTitle:@"No" style:UIAlertActionStyleDefault handler:nil];
-                    [rememberMeController addAction:rememberAction];
-                    [rememberMeController addAction:forgetAction];
-                    [[[[UIApplication sharedApplication] keyWindow] rootViewController] presentViewController:rememberMeController animated:TRUE completion:nil];
-                };
-                return _logos_meta_orig$_ungrouped$UIAlertAction$actionWithTitle$style$handler$(self, _cmd, arg1, arg2, newCompletionBlock);
+                return _logos_meta_orig$_ungrouped$UIAlertAction$actionWithTitle$style$handler$(self, _cmd, arg1, arg2, arg3);
             }
         } else {
             return _logos_meta_orig$_ungrouped$UIAlertAction$actionWithTitle$style$handler$(self, _cmd, arg1, arg2, arg3);
@@ -204,6 +248,13 @@ static id _logos_meta_method$_ungrouped$UIAlertAction$actionWithTitle$style$hand
 }
 
 
+
+static __attribute__((constructor)) void _logosLocalCtor_964e7248(int __unused argc, char __unused **argv, char __unused **envp) {
+    HBPreferences *preferences = [[HBPreferences alloc] initWithIdentifier:@"com.samgisaninja.snellprefs"];
+    [preferences registerBool:&enabled default:TRUE forKey:@"isEnabled"];
+    [preferences registerObject:&useWallpaper default:@"homescreenBackground" forKey:@"useWallpaper"];
+    [preferences registerObject:&blurStyle default:@"unblurredStyle" forKey:@"blurStyle"];
+}
 static __attribute__((constructor)) void _logosLocalInit() {
 {Class _logos_class$_ungrouped$UIAlertController = objc_getClass("UIAlertController"); MSHookMessageEx(_logos_class$_ungrouped$UIAlertController, @selector(viewWillAppear:), (IMP)&_logos_method$_ungrouped$UIAlertController$viewWillAppear$, (IMP*)&_logos_orig$_ungrouped$UIAlertController$viewWillAppear$);Class _logos_class$_ungrouped$_UIDimmingKnockoutBackdropView = objc_getClass("_UIDimmingKnockoutBackdropView"); MSHookMessageEx(_logos_class$_ungrouped$_UIDimmingKnockoutBackdropView, @selector(setBounds:), (IMP)&_logos_method$_ungrouped$_UIDimmingKnockoutBackdropView$setBounds$, (IMP*)&_logos_orig$_ungrouped$_UIDimmingKnockoutBackdropView$setBounds$);Class _logos_class$_ungrouped$_UIInterfaceActionVibrantSeparatorView = objc_getClass("_UIInterfaceActionVibrantSeparatorView"); MSHookMessageEx(_logos_class$_ungrouped$_UIInterfaceActionVibrantSeparatorView, @selector(_setupEffectView), (IMP)&_logos_method$_ungrouped$_UIInterfaceActionVibrantSeparatorView$_setupEffectView, (IMP*)&_logos_orig$_ungrouped$_UIInterfaceActionVibrantSeparatorView$_setupEffectView);Class _logos_class$_ungrouped$_UIAlertControllerActionView = objc_getClass("_UIAlertControllerActionView"); MSHookMessageEx(_logos_class$_ungrouped$_UIAlertControllerActionView, @selector(setAlertController:), (IMP)&_logos_method$_ungrouped$_UIAlertControllerActionView$setAlertController$, (IMP*)&_logos_orig$_ungrouped$_UIAlertControllerActionView$setAlertController$);MSHookMessageEx(_logos_class$_ungrouped$_UIAlertControllerActionView, @selector(setHighlighted:), (IMP)&_logos_method$_ungrouped$_UIAlertControllerActionView$setHighlighted$, (IMP*)&_logos_orig$_ungrouped$_UIAlertControllerActionView$setHighlighted$);Class _logos_class$_ungrouped$SpringBoard = objc_getClass("SpringBoard"); MSHookMessageEx(_logos_class$_ungrouped$SpringBoard, @selector(applicationDidFinishLaunching:), (IMP)&_logos_method$_ungrouped$SpringBoard$applicationDidFinishLaunching$, (IMP*)&_logos_orig$_ungrouped$SpringBoard$applicationDidFinishLaunching$);Class _logos_class$_ungrouped$UIAlertAction = objc_getClass("UIAlertAction"); Class _logos_metaclass$_ungrouped$UIAlertAction = object_getClass(_logos_class$_ungrouped$UIAlertAction); MSHookMessageEx(_logos_metaclass$_ungrouped$UIAlertAction, @selector(actionWithTitle:style:handler:), (IMP)&_logos_meta_method$_ungrouped$UIAlertAction$actionWithTitle$style$handler$, (IMP*)&_logos_meta_orig$_ungrouped$UIAlertAction$actionWithTitle$style$handler$);} }
-#line 181 "Tweak.x"
+#line 232 "Tweak.x"

@@ -2,11 +2,12 @@ include $(THEOS)/makefiles/common.mk
 
 BUNDLE_NAME = snellprefs
 
-snellprefs_FILES = SNLRootListController.m
+snellprefs_FILES = SNLRootListController.m SNLAppearanceListController.m
 snellprefs_INSTALL_PATH = /Library/PreferenceBundles
 snellprefs_FRAMEWORKS = UIKit
 snellprefs_PRIVATE_FRAMEWORKS = Preferences
 snellprefs_CFLAGS = -fobjc-arc
+snellprefs_EXTRA_FRAMEWORKS += Cephei
 
 include $(THEOS_MAKE_PATH)/bundle.mk
 

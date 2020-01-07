@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>items</key>
+	<array>
+        <dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>label</key>
+			<string>Tap here to try your changes</string>
+		</dict>
+        <dict>
+            <key>cell</key>
+            <string>PSButtonCell</string>
+            <key>label</key>
+            <string>Test alert</string>
+            <key>action</key>
+            <string>testAlert</string>
+        </dict>
+        <dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>label</key>
+			<string>Background Options</string>
+		</dict>
+        <dict>
+            <key>cell</key>
+            <string>PSSegmentCell</string>
+            <key>defaults</key>
+			<string>com.samgisaninja.snellprefs</string>
+            <key>key</key>
+			<string>useWallpaper</string>
+            <key>default</key>
+            <string>homescreenBackground</string>
+            <key>validTitles</key>
+            <array>
+                <string>Use app background</string>
+                <string>Use homescreen wallpaper</string>
+                <string>Use lockscreen wallpaper</string>
+            </array>
+            <key>validValues</key>
+            <array>
+                <string>appBackground</string>
+                <string>homescreenBackground</string>
+                <string>lockscreenBackground</string>
+            </array>
+            <key>PostNotification</key>
+			<string>com.samgisaninja.snellprefs/ReloadPrefs</string>
+        </dict>
+        <dict>
+            <key>cell</key>
+            <string>PSLinkListCell</string>
+            <key>label</key>
+            <string>Blur Style</string>
+            <key>defaults</key>
+			<string>com.samgisaninja.snellprefs</string>
+            <key>key</key>
+			<string>blurStyle</string>
+            <key>default</key>
+            <string>unblurredStyle</string>
+            <key>validTitles</key>
+            <array>
+                <string>No Blur, Darken only</string>
+                <string>Ultra Light Blur</string>
+                <string>Light Blur</string>
+                <string>Normal Blur</string>
+                <string>Prominent Blur</string>
+                <string>Dark Blur</string>
+            </array>
+            <key>validValues</key>
+            <array>
+                <string>unblurredStyle</string>
+                <string>ultraLightStyle</string>
+                <string>lightStyle</string>
+                <string>regularStyle</string>
+                <string>prominentStyle</string>
+                <string>darkStyle</string>
+            </array>
+            <key>detail</key>
+			<string>PSListItemsController</string>
+            <key>PostNotification</key>
+			<string>com.samgisaninja.snellprefs/ReloadPrefs</string>
+        </dict>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>label</key>
+			<string>Sections</string>
+		</dict>
+        <dict>
+			<key>cell</key>
+			<string>PSLinkCell</string>
+			<key>defaults</key>
+			<string>com.samgisaninja.snellprefs</string>
+			<key>detail</key>
+			<string>SNLTextColorListController</string>
+			<key>label</key>
+			<string>Text Color Options...</string>
+			<key>isController</key>
+			<true/>
+		</dict>
+        <dict>
+			<key>cell</key>
+			<string>PSLinkCell</string>
+			<key>defaults</key>
+			<string>com.samgisaninja.snellprefs</string>
+			<key>detail</key>
+			<string>SNLAlertViewColorListController</string>
+			<key>label</key>
+			<string>Alert View Color Options...</string>
+			<key>isController</key>
+			<true/>
+		</dict>
+        <dict>
+			<key>cell</key>
+			<string>PSLinkCell</string>
+			<key>defaults</key>
+			<string>com.samgisaninja.snellprefs</string>
+			<key>detail</key>
+			<string>SNLSeparatorListController</string>
+			<key>label</key>
+			<string>Separator Options...</string>
+			<key>isController</key>
+			<true/>
+		</dict>
+	</array>
+	<key>title</key>
+	<string>Appearance Customization</string>
+</dict>
+</plist>
