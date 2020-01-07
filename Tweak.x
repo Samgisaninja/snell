@@ -1,17 +1,19 @@
 #import <Cephei/HBPreferences.h>
+#include <CSColorPicker/CSColorPicker.h>
 
 extern CFArrayRef CPBitmapCreateImagesFromData(CFDataRef cpbitmap, void*, int, void*);
+
 UIAlertController *currentAlert;
 BOOL enabled;
 NSString *useWallpaper;
 NSString *blurStyle;
+BOOL shouldChangeTitleColor;
+NSString *titleColorHex;
+BOOL shouldChangeMessageColor;
+NSString *messageColorHex;
 UIColor *alertActionBackgroundColor;
 UIColor *alertActionHighlightColor;
 NSMutableDictionary *brain;
-
-@interface UIApplication (private)
--(UIWindow *)keyWindow;
-@end
 
 @interface UIAlertController (private)
 @property (readonly) UIView *_dimmingView;
@@ -79,6 +81,28 @@ NSMutableDictionary *brain;
             [sbWallpaperView setImage:sbWallpaper];
             [sbWallpaperView addSubview:snellEffectView];
 	        [self._dimmingView addSubview:sbWallpaperView];
+        }
+        if (shouldChangeTitleColor) {
+            NSArray *alertControllerView = [[self view] allSubviews];
+            for (id object in alertControllerView) {
+                if ([NSStringFromClass([object class]) isEqualToString:@"UILabel"]){
+                    UILabel *possibleTitleLabel = (UILabel *)object;
+                    if ([[possibleTitleLabel text] isEqualToString:[self title]]) {
+                        [possibleTitleLabel setTextColor:[UIColor cscp_colorFromHexString:titleColorHex]];
+                    }
+                }
+            }
+        }
+        if (shouldChangeMessageColor) {
+            NSArray *alertControllerView = [[self view] allSubviews];
+            for (id object in alertControllerView) {
+                if ([NSStringFromClass([object class]) isEqualToString:@"UILabel"]){
+                    UILabel *possibleMessageLabel = (UILabel *)object;
+                    if ([[possibleMessageLabel text] isEqualToString:[self message]]) {
+                        [possibleMessageLabel setTextColor:[UIColor cscp_colorFromHexString:messageColorHex]];
+                    }
+                }
+            }
         }
     }
     currentAlert = self;
@@ -228,4 +252,8 @@ NSMutableDictionary *brain;
     [preferences registerBool:&enabled default:TRUE forKey:@"isEnabled"];
     [preferences registerObject:&useWallpaper default:@"homescreenBackground" forKey:@"useWallpaper"];
     [preferences registerObject:&blurStyle default:@"unblurredStyle" forKey:@"blurStyle"];
+    [preferences registerBool:&shouldChangeTitleColor default:FALSE forKey:@"shouldChangeTitleColor"];
+    [preferences registerObject:&titleColorHex default:@"FF000000" forKey:@"customTitleColor"];
+    [preferences registerBool:&shouldChangeMessageColor default:FALSE forKey:@"shouldChangeMessageColor"];
+    [preferences registerObject:&messageColorHex default:@"FF000000" forKey:@"customMessageColor"];
 }

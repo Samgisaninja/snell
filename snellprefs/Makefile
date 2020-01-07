@@ -8,6 +8,7 @@ snellprefs_FRAMEWORKS = UIKit
 snellprefs_PRIVATE_FRAMEWORKS = Preferences
 snellprefs_CFLAGS = -fobjc-arc
 snellprefs_EXTRA_FRAMEWORKS += Cephei
+snellprefs_LDFLAGS += -lCSColorPicker
 
 include $(THEOS_MAKE_PATH)/bundle.mk
 

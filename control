@@ -1,6 +1,6 @@
 Package: com.samgisaninja.snell
 Name: snell
-Depends: mobilesubstrate
+Depends: mobilesubstrate, com.creaturesurvive.libcscolorpicker, ws.hbang.common (>= 1.14)
 Version: 0.0.1
 Architecture: iphoneos-arm
 Description: An awesome MobileSubstrate tweak!
