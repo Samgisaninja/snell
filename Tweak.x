@@ -11,9 +11,18 @@ BOOL shouldChangeTitleColor;
 NSString *titleColorHex;
 BOOL shouldChangeMessageColor;
 NSString *messageColorHex;
-UIColor *alertActionBackgroundColor;
-UIColor *alertActionHighlightColor;
+BOOL shouldChangeTopHalfColor;
+NSString *customTopHalfColor;
+BOOL shouldChangeBottomHalfColor;
+NSString *customBottomHalfColor;
+BOOL shouldChangeActionHighlightColor;
+NSString *customActionHighlightColor;
+UIView *highlightView;
+BOOL hideStockBackdrop;
 NSMutableDictionary *brain;
+
+@interface _UIInterfaceActionGroupHeaderScrollView : UIView
+@end
 
 @interface UIAlertController (private)
 @property (readonly) UIView *_dimmingView;
@@ -21,6 +30,7 @@ NSMutableDictionary *brain;
 
 @interface _UIAlertControllerActionView : UIView
 -(void)setBackgroundColor:(UIColor *)arg1;
+-(UIAlertAction *)action;
 @end
 
 @interface _UIInterfaceActionVibrantSeparatorView : UIView
@@ -125,7 +135,7 @@ NSMutableDictionary *brain;
 %hook _UIInterfaceActionVibrantSeparatorView
 
 -(void)_setupEffectView{
-    if (enabled) {
+    if (enabled && hideStockBackdrop) {
         [self setHidden:TRUE];
     }
     %orig;
@@ -136,10 +146,11 @@ NSMutableDictionary *brain;
 
 %hook _UIAlertControllerActionView
 
-
--(void)setAlertController:(UIAlertController*)arg1{
+-(void)_updateStyle{
     if (enabled) {
-        [self setBackgroundColor:[UIColor colorWithRed:(0.0/255.0) green:(0.0/255.0) blue:(0.0/255.0) alpha:0.3]];
+        if (shouldChangeBottomHalfColor) {
+            [self setBackgroundColor:[UIColor cscp_colorFromHexString:customBottomHalfColor]];
+        }
     }
     %orig;
 }
@@ -147,13 +158,30 @@ NSMutableDictionary *brain;
 -(void)setHighlighted:(BOOL)arg1{
     if (enabled) {
         if (arg1) {
-            [self setBackgroundColor:[UIColor greenColor]]; 
+            if (shouldChangeActionHighlightColor) {
+                highlightView = [[UIView alloc] initWithFrame:[self bounds]];
+                [highlightView setBackgroundColor:[UIColor cscp_colorFromHexString:customActionHighlightColor]];
+                [self addSubview:highlightView];
+                [highlightView setHidden:FALSE];
+            }
         } else {
-            [self setBackgroundColor:[UIColor colorWithRed:(0.0/255.0) green:(0.0/255.0) blue:(0.0/255.0) alpha:0.3]]; 
+            [highlightView setHidden:TRUE];
         }
     }
     %orig;
 }
+
+%end
+
+%hook _UIInterfaceActionGroupHeaderScrollView
+
+-(id)updateConstraints{
+    if (shouldChangeTopHalfColor) {
+        [self setBackgroundColor:[UIColor cscp_colorFromHexString:customTopHalfColor]];
+    }
+    return %orig;
+}
+
 
 %end
 
@@ -256,4 +284,11 @@ NSMutableDictionary *brain;
     [preferences registerObject:&titleColorHex default:@"FF000000" forKey:@"customTitleColor"];
     [preferences registerBool:&shouldChangeMessageColor default:FALSE forKey:@"shouldChangeMessageColor"];
     [preferences registerObject:&messageColorHex default:@"FF000000" forKey:@"customMessageColor"];
+    [preferences registerBool:&shouldChangeTopHalfColor default:FALSE forKey:@"shouldChangeTopHalfColor"];
+    [preferences registerObject:&customTopHalfColor default:@"00000000" forKey:@"customTopHalfColor"];
+    [preferences registerBool:&shouldChangeBottomHalfColor default:FALSE forKey:@"shouldChangeBottomHalfColor"];
+    [preferences registerObject:&customBottomHalfColor default:@"00000000" forKey:@"customBottomHalfColor"];
+    [preferences registerBool:&shouldChangeActionHighlightColor default:FALSE forKey:@"shouldChangeActionHighlightColor"];
+    [preferences registerObject:&customActionHighlightColor default:@"FF007AFF" forKey:@"customActionHighlightColor"];
+    [preferences registerBool:&hideStockBackdrop default:FALSE forKey:@"hideStockBackdrop"];
 }

@@ -156,31 +156,135 @@
 			<key>cell</key>
 			<string>PSGroupCell</string>
 			<key>label</key>
-			<string>Sections</string>
+			<string>Alert View Color Options</string>
 		</dict>
-        <dict>
+		<dict>
 			<key>cell</key>
-			<string>PSLinkCell</string>
+			<string>PSSwitchCell</string>
+			<key>default</key>
+			<false/>
 			<key>defaults</key>
 			<string>com.samgisaninja.snellprefs</string>
-			<key>detail</key>
-			<string>SNLTextColorListController</string>
+			<key>key</key>
+			<string>shouldChangeTopHalfColor</string>
 			<key>label</key>
-			<string>Text Color Options...</string>
-			<key>isController</key>
-			<true/>
+			<string>Customize Title/Message Backdrop Color</string>
+			<key>PostNotification</key>
+			<string>com.samgisaninja.snellprefs/ReloadPrefs</string>
 		</dict>
-        <dict>
-			<key>cell</key>
+		<dict>
+            <key>cell</key>
 			<string>PSLinkCell</string>
+            <key>cellClass</key>
+            <string>CSColorDisplayCell</string>
+            <key>defaults</key>
+			<string>com.samgisaninja.snellprefs</string>
+			<key>PostNotification</key>
+			<string>com.samgisaninja.snellprefs/ReloadPrefs</string> 
+			<key>key</key>
+			<string>customTopHalfColor</string>
+			<key>label</key>
+			<string>Title/Message Backdrop Color</string>
+            <key>fallback</key>
+            <string>00000000</string>
+			<key>alpha</key>
+            <true/>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>default</key>
+			<false/>
 			<key>defaults</key>
 			<string>com.samgisaninja.snellprefs</string>
-			<key>detail</key>
-			<string>SNLAlertViewColorListController</string>
+			<key>key</key>
+			<string>shouldChangeBottomHalfColor</string>
 			<key>label</key>
-			<string>Alert View Color Options...</string>
-			<key>isController</key>
-			<true/>
+			<string>Customize Alert Actions Backdrop Color</string>
+			<key>PostNotification</key>
+			<string>com.samgisaninja.snellprefs/ReloadPrefs</string>
+		</dict>
+		<dict>
+            <key>cell</key>
+			<string>PSLinkCell</string>
+            <key>cellClass</key>
+            <string>CSColorDisplayCell</string>
+            <key>defaults</key>
+			<string>com.samgisaninja.snellprefs</string>
+			<key>PostNotification</key>
+			<string>com.samgisaninja.snellprefs/ReloadPrefs</string> 
+			<key>key</key>
+			<string>customBottomHalfColor</string>
+			<key>label</key>
+			<string>Alert Actions Backdrop Color</string>
+            <key>fallback</key>
+            <string>00000000</string>
+			<key>alpha</key>
+            <true/>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>default</key>
+			<false/>
+			<key>defaults</key>
+			<string>com.samgisaninja.snellprefs</string>
+			<key>key</key>
+			<string>shouldChangeBottomHalfColor</string>
+			<key>label</key>
+			<string>Customize Alert Actions Backdrop Color</string>
+			<key>PostNotification</key>
+			<string>com.samgisaninja.snellprefs/ReloadPrefs</string>
+		</dict>
+		<dict>
+            <key>cell</key>
+			<string>PSLinkCell</string>
+            <key>cellClass</key>
+            <string>CSColorDisplayCell</string>
+            <key>defaults</key>
+			<string>com.samgisaninja.snellprefs</string>
+			<key>PostNotification</key>
+			<string>com.samgisaninja.snellprefs/ReloadPrefs</string> 
+			<key>key</key>
+			<string>customBottomHalfColor</string>
+			<key>label</key>
+			<string>Alert Actions Backdrop Color</string>
+            <key>fallback</key>
+            <string>00000000</string>
+			<key>alpha</key>
+            <true/>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>default</key>
+			<false/>
+			<key>defaults</key>
+			<string>com.samgisaninja.snellprefs</string>
+			<key>key</key>
+			<string>shouldChangeActionHighlightColor</string>
+			<key>label</key>
+			<string>Customize Alert Action Highlight Color</string>
+			<key>PostNotification</key>
+			<string>com.samgisaninja.snellprefs/ReloadPrefs</string>
+		</dict>
+		<dict>
+            <key>cell</key>
+			<string>PSLinkCell</string>
+            <key>cellClass</key>
+            <string>CSColorDisplayCell</string>
+            <key>defaults</key>
+			<string>com.samgisaninja.snellprefs</string>
+			<key>PostNotification</key>
+			<string>com.samgisaninja.snellprefs/ReloadPrefs</string> 
+			<key>key</key>
+			<string>customActionHighlightColor</string>
+			<key>label</key>
+			<string>Alert Actions Highlight Color</string>
+            <key>fallback</key>
+            <string>FF007AFF</string>
+			<key>alpha</key>
+            <true/>
 		</dict>
         <dict>
 			<key>cell</key>
