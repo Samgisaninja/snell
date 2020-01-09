@@ -124,7 +124,7 @@ NSMutableDictionary *brain;
 %hook _UIDimmingKnockoutBackdropView
 
 -(void)setBounds:(CGRect)arg1{
-    if (enabled) {
+    if (enabled && hideStockBackdrop) {
         [self setHidden:TRUE];
     }
     %orig;
@@ -135,7 +135,7 @@ NSMutableDictionary *brain;
 %hook _UIInterfaceActionVibrantSeparatorView
 
 -(void)_setupEffectView{
-    if (enabled && hideStockBackdrop) {
+    if (enabled) {
         [self setHidden:TRUE];
     }
     %orig;
