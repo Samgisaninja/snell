@@ -19,6 +19,9 @@ BOOL shouldChangeActionHighlightColor;
 NSString *customActionHighlightColor;
 UIView *highlightView;
 BOOL hideStockBackdrop;
+NSString *separatorStyle;
+NSString *customSeparatorColor;
+NSNumber *customSeparatorThickness;
 NSMutableDictionary *brain;
 
 @interface _UIInterfaceActionGroupHeaderScrollView : UIView
@@ -136,7 +139,13 @@ NSMutableDictionary *brain;
 
 -(void)_setupEffectView{
     if (enabled) {
-        [self setHidden:TRUE];
+        if ([separatorStyle isEqualToString:@"hideSeparators"]) {
+            [self setHidden:TRUE];
+        } else if ([separatorStyle isEqualToString:@"customSeparators"]) {
+            [self setBackgroundColor:[UIColor cscp_colorFromHexString:customSeparatorColor]];
+            float thickness = [customSeparatorThickness floatValue];
+            [self setFrame:CGRectMake(self.frame.origin.x, ((self.frame.origin.y) - thickness/2), self.frame.size.width, thickness)];
+        }
     }
     %orig;
 }
@@ -291,4 +300,6 @@ NSMutableDictionary *brain;
     [preferences registerBool:&shouldChangeActionHighlightColor default:FALSE forKey:@"shouldChangeActionHighlightColor"];
     [preferences registerObject:&customActionHighlightColor default:@"FF007AFF" forKey:@"customActionHighlightColor"];
     [preferences registerBool:&hideStockBackdrop default:FALSE forKey:@"hideStockBackdrop"];
+    [preferences registerObject:&separatorStyle default:@"stockSeparators" forKey:@"separatorStyle"];
+    [preferences registerObject:&customSeparatorColor default:@"007AFF" forKey:@"customSeparatorColor"];
 }
