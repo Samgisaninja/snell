@@ -84,6 +84,38 @@
 		</dict>
 		<dict>
 			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>default</key>
+			<false/>
+			<key>defaults</key>
+			<string>com.samgisaninja.snellprefs</string>
+			<key>key</key>
+			<string>shouldOverlayBackgroundColor</string>
+			<key>label</key>
+			<string>Overlay Solid Color</string>
+			<key>PostNotification</key>
+			<string>com.samgisaninja.snellprefs/ReloadPrefs</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSLinkCell</string>
+			<key>cellClass</key>
+			<string>CSColorDisplayCell</string>
+			<key>defaults</key>
+			<string>com.samgisaninja.snellprefs</string>
+			<key>PostNotification</key>
+			<string>com.samgisaninja.snellprefs/ReloadPrefs</string>
+			<key>key</key>
+			<string>customBackgroundColor</string>
+			<key>label</key>
+			<string>Alert Actions Text Color</string>
+			<key>fallback</key>
+			<string>00000000</string>
+			<key>alpha</key>
+			<true/>
+		</dict>
+		<dict>
+			<key>cell</key>
 			<string>PSGroupCell</string>
 			<key>label</key>
 			<string>Text Options</string>
@@ -212,9 +244,9 @@
 			<key>defaults</key>
 			<string>com.samgisaninja.snellprefs</string>
 			<key>key</key>
-			<string>shouldChangeBottomHalfColor</string>
+			<string>shouldChangeAlertActionTextColor</string>
 			<key>label</key>
-			<string>Customize Alert Actions Backdrop Color</string>
+			<string>Customize Alert Actions Text Color</string>
 			<key>PostNotification</key>
 			<string>com.samgisaninja.snellprefs/ReloadPrefs</string>
 		</dict>
@@ -228,13 +260,13 @@
 			<key>PostNotification</key>
 			<string>com.samgisaninja.snellprefs/ReloadPrefs</string>
 			<key>key</key>
-			<string>customBottomHalfColor</string>
+			<string>customAlertActionTextColor</string>
 			<key>label</key>
-			<string>Alert Actions Backdrop Color</string>
+			<string>Alert Actions Text Color</string>
 			<key>fallback</key>
-			<string>00000000</string>
+			<string>007AFF</string>
 			<key>alpha</key>
-			<true/>
+			<false/>
 		</dict>
 		<dict>
 			<key>cell</key>

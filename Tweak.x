@@ -3,7 +3,6 @@
 
 extern CFArrayRef CPBitmapCreateImagesFromData(CFDataRef cpbitmap, void*, int, void*);
 
-UIAlertController *currentAlert;
 BOOL enabled;
 NSString *useWallpaper;
 NSString *blurStyle;
@@ -22,7 +21,10 @@ BOOL hideStockBackdrop;
 NSString *separatorStyle;
 NSString *customSeparatorColor;
 NSNumber *customSeparatorThickness;
-NSMutableDictionary *brain;
+BOOL shouldChangeAlertActionTextColor;
+NSString *customAlertActionTextColor;
+BOOL shouldOverlayBackgroundColor;
+NSString *customBackgroundColor;
 
 @interface _UIInterfaceActionGroupHeaderScrollView : UIView
 @end
@@ -95,6 +97,11 @@ NSMutableDictionary *brain;
             [sbWallpaperView addSubview:snellEffectView];
 	        [self._dimmingView addSubview:sbWallpaperView];
         }
+        if (shouldOverlayBackgroundColor) {
+            UIView *colorView = [[UIView alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+            [colorView setBackgroundColor:[UIColor cscp_colorFromHexString:customBackgroundColor]];
+            [self._dimmingView addSubview:colorView];
+        }
         if (shouldChangeTitleColor) {
             NSArray *alertControllerView = [[self view] allSubviews];
             for (id object in alertControllerView) {
@@ -118,7 +125,9 @@ NSMutableDictionary *brain;
             }
         }
     }
-    currentAlert = self;
+    if (shouldChangeAlertActionTextColor) {
+        [[self view] setTintColor:[UIColor cscp_colorFromHexString:customAlertActionTextColor]];
+    }
     %orig;
 }
 
@@ -232,58 +241,6 @@ NSMutableDictionary *brain;
 
 %end
 
-#pragma mark Remembering Actions
-
-
-%hook UIAlertAction
-
-+(id)actionWithTitle:(NSString *)arg1 style:(long long)arg2 handler:(void (^)(void))arg3{
-    if (enabled) {
-        if (![[currentAlert title] isEqualToString:@"Snell: Remember this action?"]){
-            if (![[currentAlert message] isEqualToString:@"Would you like to remember this decision in the future?"]){
-                if (arg3 == nil) {
-                    void(^newCompletionBlock)(void) = ^{
-                        NSLog(@"%@", [NSString stringWithFormat:@"SNELL: Alert title was: %@\n Message was: %@\n chosen action was: %@\n", [currentAlert title], [currentAlert message], arg1]);
-                        UIAlertController *rememberMeController = [UIAlertController alertControllerWithTitle:@"Snell: Remember this action?" message:@"Would you like to remember this decision in the future?" preferredStyle:UIAlertControllerStyleAlert];
-                        UIAlertAction *rememberAction = [UIAlertAction actionWithTitle:@"Yes" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-                            [brain setObject:arg1 forKey:[NSString stringWithFormat:@"%@+%@", [currentAlert title], [currentAlert message]]];
-                            
-                        }];
-                        UIAlertAction *forgetAction = [UIAlertAction actionWithTitle:@"No" style:UIAlertActionStyleDefault handler:nil];
-                        [rememberMeController addAction:rememberAction];
-                        [rememberMeController addAction:forgetAction];
-                        [[[[UIApplication sharedApplication] keyWindow] rootViewController] presentViewController:rememberMeController animated:TRUE completion:nil];
-                    };
-                    return %orig(arg1, arg2, newCompletionBlock);
-                } else {
-                    void(^newCompletionBlock)(void) = ^{
-                        arg3();
-                        NSLog(@"%@", [NSString stringWithFormat:@"SNELL: Alert title was: %@\n Message was: %@\n chosen action was: %@\n", [currentAlert title], [currentAlert message], arg1]);
-                        UIAlertController *rememberMeController = [UIAlertController alertControllerWithTitle:@"Snell: Remember this action?" message:@"Would you like to remember this decision in the future?" preferredStyle:UIAlertControllerStyleAlert];
-                        UIAlertAction *rememberAction = [UIAlertAction actionWithTitle:@"Yes" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-                            [brain setObject:arg1 forKey:[NSString stringWithFormat:@"%@+%@", [currentAlert title], [currentAlert message]]];
-                            
-                        }];
-                        UIAlertAction *forgetAction = [UIAlertAction actionWithTitle:@"No" style:UIAlertActionStyleDefault handler:nil];
-                        [rememberMeController addAction:rememberAction];
-                        [rememberMeController addAction:forgetAction];
-                        [[[[UIApplication sharedApplication] keyWindow] rootViewController] presentViewController:rememberMeController animated:TRUE completion:nil];
-                    };
-                    return %orig(arg1, arg2, newCompletionBlock);
-                }
-            } else {
-                return %orig;
-            }
-        } else {
-            return %orig;
-        }
-    } else {
-        return %orig;
-    }
-}
-
-%end
-
 %ctor {
     HBPreferences *preferences = [[HBPreferences alloc] initWithIdentifier:@"com.samgisaninja.snellprefs"];
     [preferences registerBool:&enabled default:TRUE forKey:@"isEnabled"];
@@ -302,4 +259,8 @@ NSMutableDictionary *brain;
     [preferences registerBool:&hideStockBackdrop default:FALSE forKey:@"hideStockBackdrop"];
     [preferences registerObject:&separatorStyle default:@"stockSeparators" forKey:@"separatorStyle"];
     [preferences registerObject:&customSeparatorColor default:@"007AFF" forKey:@"customSeparatorColor"];
+    [preferences registerBool:&shouldChangeAlertActionTextColor default:FALSE forKey:@"shouldChangeAlertActionTextColor"];
+    [preferences registerObject:&customAlertActionTextColor default:@"007AFF" forKey:@"customAlertActionTextColor"];
+    [preferences registerBool:&shouldOverlayBackgroundColor default:FALSE forKey:@"shouldOverlayBackgroundColor"];
+    [preferences registerObject:&customBackgroundColor default:@"00000000" forKey:@"customBackgroundColor"];
 }
