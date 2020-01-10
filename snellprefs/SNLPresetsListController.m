@@ -191,7 +191,7 @@
 	HBPreferences *prefs = [[HBPreferences alloc] initWithIdentifier:@"com.samgisaninja.snellprefs"];
 	[prefs setBool:TRUE forKey:@"isEnabled"];
 	[prefs setObject:@"appBackground" forKey:@"useWallpaper"];
-	[prefs setObject:@"unblurredStyle" forKey:@"blurStyle"];
+	[prefs setObject:@"darkBlurStyle" forKey:@"blurStyle"];
 	[prefs setBool:TRUE forKey:@"shouldChangeTitleColor"];
 	[prefs setObject:@"FFDAA520" forKey:@"customTitleColor"];
 	[prefs setBool:TRUE forKey:@"shouldChangeMessageColor"];
@@ -208,7 +208,7 @@
 	[prefs setBool:TRUE forKey:@"shouldChangeAlertActionTextColor"];
 	[prefs setObject:@"FFDAA520" forKey:@"customAlertActionTextColor"];
 	[prefs setBool:TRUE forKey:@"shouldOverlayBackgroundColor"];
-	[prefs setObject:@"FF241571" forKey:@"customBackgroundColor"];
+	[prefs setObject:@"AA241571" forKey:@"customBackgroundColor"];
 	[prefs setBool:TRUE forKey:@"shouldUseBorder"];
 	[prefs setObject:@"FFDAA520" forKey:@"borderColor"];
 	[prefs synchronize];
