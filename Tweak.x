@@ -22,13 +22,18 @@ BOOL hideStockBackdrop;
 NSString *separatorStyle;
 NSString *customSeparatorColor;
 NSNumber *customSeparatorThickness;
-NSMutableDictionary *brain;
+BOOL enableBrain;
 
 @interface _UIInterfaceActionGroupHeaderScrollView : UIView
 @end
 
+@interface UIAlertAction (private)
+-(id /* block */)handler;
+@end
+
 @interface UIAlertController (private)
 @property (readonly) UIView *_dimmingView;
+@property NSArray *_actions;
 @end
 
 @interface _UIAlertControllerActionView : UIView
@@ -41,6 +46,7 @@ NSMutableDictionary *brain;
 
 @interface UIView (private)
 @property NSArray *allSubviews;
+-(id)_viewControllerForAncestor;
 @end
 
 @interface _UIDimmingKnockoutBackdropView : UIView
@@ -119,6 +125,24 @@ NSMutableDictionary *brain;
         }
     }
     currentAlert = self;
+    if (enableBrain) {
+        HBPreferences *preferences = [[HBPreferences alloc] initWithIdentifier:@"com.samgisaninja.snellprefs"];
+        NSDictionary *brain = [preferences objectForKey:@"brain"];
+        NSString *thought = [NSString stringWithFormat:@"%@-%@-%@", [self title], [self message], [[NSBundle mainBundle] bundleIdentifier]];
+        if ([[brain allKeys] containsObject:thought] && enableBrain) {
+            NSString *chosenAlert = [brain objectForKey:thought];
+            NSArray *actionsOnCurrentAlert = [self _actions];
+            for (UIAlertAction *action in actionsOnCurrentAlert) {
+                NSString *actionTitle = [action title];
+                if ([actionTitle isEqualToString:chosenAlert]) {
+                    void (^handler) (UIAlertAction *) = [action handler];
+                    [self dismissViewControllerAnimated:FALSE completion:nil];
+                    handler(action);
+                }
+            }
+        }
+    }
+    
     %orig;
 }
 
@@ -238,44 +262,53 @@ NSMutableDictionary *brain;
 %hook UIAlertAction
 
 +(id)actionWithTitle:(NSString *)arg1 style:(long long)arg2 handler:(void (^)(void))arg3{
-    if (enabled) {
-        if (![[currentAlert title] isEqualToString:@"Snell: Remember this action?"]){
-            if (![[currentAlert message] isEqualToString:@"Would you like to remember this decision in the future?"]){
-                if (arg3 == nil) {
-                    void(^newCompletionBlock)(void) = ^{
-                        NSLog(@"%@", [NSString stringWithFormat:@"SNELL: Alert title was: %@\n Message was: %@\n chosen action was: %@\n", [currentAlert title], [currentAlert message], arg1]);
-                        UIAlertController *rememberMeController = [UIAlertController alertControllerWithTitle:@"Snell: Remember this action?" message:@"Would you like to remember this decision in the future?" preferredStyle:UIAlertControllerStyleAlert];
-                        UIAlertAction *rememberAction = [UIAlertAction actionWithTitle:@"Yes" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-                            [brain setObject:arg1 forKey:[NSString stringWithFormat:@"%@+%@", [currentAlert title], [currentAlert message]]];
-                            
-                        }];
-                        UIAlertAction *forgetAction = [UIAlertAction actionWithTitle:@"No" style:UIAlertActionStyleDefault handler:nil];
-                        [rememberMeController addAction:rememberAction];
-                        [rememberMeController addAction:forgetAction];
-                        [[[[UIApplication sharedApplication] keyWindow] rootViewController] presentViewController:rememberMeController animated:TRUE completion:nil];
-                    };
-                    return %orig(arg1, arg2, newCompletionBlock);
-                } else {
-                    void(^newCompletionBlock)(void) = ^{
-                        arg3();
-                        NSLog(@"%@", [NSString stringWithFormat:@"SNELL: Alert title was: %@\n Message was: %@\n chosen action was: %@\n", [currentAlert title], [currentAlert message], arg1]);
-                        UIAlertController *rememberMeController = [UIAlertController alertControllerWithTitle:@"Snell: Remember this action?" message:@"Would you like to remember this decision in the future?" preferredStyle:UIAlertControllerStyleAlert];
-                        UIAlertAction *rememberAction = [UIAlertAction actionWithTitle:@"Yes" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-                            [brain setObject:arg1 forKey:[NSString stringWithFormat:@"%@+%@", [currentAlert title], [currentAlert message]]];
-                            
-                        }];
-                        UIAlertAction *forgetAction = [UIAlertAction actionWithTitle:@"No" style:UIAlertActionStyleDefault handler:nil];
-                        [rememberMeController addAction:rememberAction];
-                        [rememberMeController addAction:forgetAction];
-                        [[[[UIApplication sharedApplication] keyWindow] rootViewController] presentViewController:rememberMeController animated:TRUE completion:nil];
-                    };
-                    return %orig(arg1, arg2, newCompletionBlock);
-                }
-            } else {
-                return %orig;
-            }
-        } else {
+    if (enabled && enableBrain) {
+        HBPreferences *preferences = [[HBPreferences alloc] initWithIdentifier:@"com.samgisaninja.snellprefs"];
+        NSMutableDictionary *origBrain = [preferences objectForKey:@"brain"];
+        if ([[origBrain allKeys] containsObject:[NSString stringWithFormat:@"%@-%@-%@", [currentAlert title], [currentAlert message], [[NSBundle mainBundle] bundleIdentifier]]]) {
             return %orig;
+        }
+        if (arg3 == nil) {
+            void(^newCompletionBlock)(void) = ^{
+                if (![[currentAlert title] isEqualToString:@"Snell: Remember this action?"]){
+                    if (![[currentAlert title] isEqualToString:@"Snell: This is a title"]){
+                        UIAlertController *rememberMeController = [UIAlertController alertControllerWithTitle:@"Snell: Remember this action?" message:@"Would you like to remember this decision in the future?" preferredStyle:UIAlertControllerStyleAlert];
+                        UIAlertAction *rememberAction = [UIAlertAction actionWithTitle:@"Yes" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+                            HBPreferences *scopePreferences = [[HBPreferences alloc] initWithIdentifier:@"com.samgisaninja.snellprefs"];
+                            NSMutableDictionary *scopeOrigBrain = [scopePreferences objectForKey:@"brain"];
+                            [scopeOrigBrain setObject:arg1 forKey:[NSString stringWithFormat:@"%@-%@-%@", [currentAlert title], [currentAlert message], [[NSBundle mainBundle] bundleIdentifier]]];
+                            NSDictionary *newBrain = [NSDictionary dictionaryWithDictionary:scopeOrigBrain];
+                            [scopePreferences setObject:newBrain forKey:@"brain"];
+                        }];
+                        UIAlertAction *forgetAction = [UIAlertAction actionWithTitle:@"No" style:UIAlertActionStyleDefault handler:nil];
+                        [rememberMeController addAction:rememberAction];
+                        [rememberMeController addAction:forgetAction];
+                        [[[[UIApplication sharedApplication] keyWindow] rootViewController] presentViewController:rememberMeController animated:TRUE completion:nil];
+                    } 
+                }
+            };
+            return %orig(arg1, arg2, newCompletionBlock);
+        } else {
+            void(^newCompletionBlock)(void) = ^{
+                arg3();
+                if (![[currentAlert title] isEqualToString:@"Snell: Remember this action?"]){
+                    if (![[currentAlert title] isEqualToString:@"Snell: This is a title"]){
+                        UIAlertController *rememberMeController = [UIAlertController alertControllerWithTitle:@"Snell: Remember this action?" message:@"Would you like to remember this decision in the future?" preferredStyle:UIAlertControllerStyleAlert];
+                        UIAlertAction *rememberAction = [UIAlertAction actionWithTitle:@"Yes" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+                            HBPreferences *scopePreferences = [[HBPreferences alloc] initWithIdentifier:@"com.samgisaninja.snellprefs"];
+                            NSMutableDictionary *scopeOrigBrain = [scopePreferences objectForKey:@"brain"];
+                            [scopeOrigBrain setObject:arg1 forKey:[NSString stringWithFormat:@"%@-%@-%@", [currentAlert title], [currentAlert message], [[NSBundle mainBundle] bundleIdentifier]]];
+                            NSDictionary *newBrain = [NSDictionary dictionaryWithDictionary:scopeOrigBrain];
+                            [scopePreferences setObject:newBrain forKey:@"brain"];
+                        }];
+                        UIAlertAction *forgetAction = [UIAlertAction actionWithTitle:@"No" style:UIAlertActionStyleDefault handler:nil];
+                        [rememberMeController addAction:rememberAction];
+                        [rememberMeController addAction:forgetAction];
+                        [[[[UIApplication sharedApplication] keyWindow] rootViewController] presentViewController:rememberMeController animated:TRUE completion:nil];
+                    }
+                }
+            };
+            return %orig(arg1, arg2, newCompletionBlock);
         }
     } else {
         return %orig;
@@ -302,4 +335,5 @@ NSMutableDictionary *brain;
     [preferences registerBool:&hideStockBackdrop default:FALSE forKey:@"hideStockBackdrop"];
     [preferences registerObject:&separatorStyle default:@"stockSeparators" forKey:@"separatorStyle"];
     [preferences registerObject:&customSeparatorColor default:@"007AFF" forKey:@"customSeparatorColor"];
+    [preferences registerBool:&enableBrain default:TRUE forKey:@"enableBrain"];
 }

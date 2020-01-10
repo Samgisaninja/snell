@@ -46,7 +46,7 @@
 			<key>defaults</key>
 			<string>com.samgisaninja.snellprefs</string>
 			<key>detail</key>
-			<string>SNLRememberVC</string>
+			<string>SNLKnowledgeListController</string>
 			<key>label</key>
 			<string>Remember Alert Decisions... (beta)</string>
 		</dict>
