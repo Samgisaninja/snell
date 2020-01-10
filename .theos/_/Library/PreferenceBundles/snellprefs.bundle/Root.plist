@@ -42,6 +42,18 @@
 		</dict>
 		<dict>
 			<key>cell</key>
+			<string>PSLinkCell</string>
+			<key>defaults</key>
+			<string>com.samgisaninja.snellprefs</string>
+			<key>detail</key>
+			<string>SNLPresetsListController</string>
+			<key>label</key>
+			<string>Presets...</string>
+			<key>isController</key>
+			<true/>
+		</dict>
+		<dict>
+			<key>cell</key>
 			<string>PSGroupCell</string>
 			<key>label</key>
 			<string>You don't need to respring to apply changes, but here's a button anyway</string>

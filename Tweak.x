@@ -25,6 +25,8 @@ BOOL shouldChangeAlertActionTextColor;
 NSString *customAlertActionTextColor;
 BOOL shouldOverlayBackgroundColor;
 NSString *customBackgroundColor;
+BOOL shouldUseBorder;
+NSString *borderColor;
 
 @interface _UIInterfaceActionGroupHeaderScrollView : UIView
 @end
@@ -102,7 +104,7 @@ NSString *customBackgroundColor;
             [colorView setBackgroundColor:[UIColor cscp_colorFromHexString:customBackgroundColor]];
             [self._dimmingView addSubview:colorView];
         }
-        if (shouldChangeTitleColor) {
+        if (shouldChangeTitleColor && [self preferredStyle] == 1) {
             NSArray *alertControllerView = [[self view] allSubviews];
             for (id object in alertControllerView) {
                 if ([NSStringFromClass([object class]) isEqualToString:@"UILabel"]){
@@ -113,7 +115,7 @@ NSString *customBackgroundColor;
                 }
             }
         }
-        if (shouldChangeMessageColor) {
+        if (shouldChangeMessageColor && [self preferredStyle] == 1) {
             NSArray *alertControllerView = [[self view] allSubviews];
             for (id object in alertControllerView) {
                 if ([NSStringFromClass([object class]) isEqualToString:@"UILabel"]){
@@ -137,7 +139,11 @@ NSString *customBackgroundColor;
 
 -(void)setBounds:(CGRect)arg1{
     if (enabled && hideStockBackdrop) {
-        [self setHidden:TRUE];
+        [self setBackgroundColor:[UIColor cscp_colorFromHexString:@"00000000"]];
+    }
+    if (enabled && shouldUseBorder) {
+        [[[self superview] layer] setBorderColor:[UIColor cscp_colorFromHexString:borderColor].CGColor];
+        [[[self superview] layer] setBorderWidth:1.0f];
     }
     %orig;
 }
@@ -263,4 +269,6 @@ NSString *customBackgroundColor;
     [preferences registerObject:&customAlertActionTextColor default:@"007AFF" forKey:@"customAlertActionTextColor"];
     [preferences registerBool:&shouldOverlayBackgroundColor default:FALSE forKey:@"shouldOverlayBackgroundColor"];
     [preferences registerObject:&customBackgroundColor default:@"00000000" forKey:@"customBackgroundColor"];
+    [preferences registerBool:&shouldUseBorder default:FALSE forKey:@"shouldUseBorder"];
+    [preferences registerObject:&borderColor default:@"FF00000000" forKey:@"borderColor"];
 }
