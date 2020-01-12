@@ -6,6 +6,16 @@
 	<array>
 		<dict>
 			<key>cell</key>
+			<string>PSStaticTextCell</string>
+			<key>label</key>
+			<string></string>
+			<key>height</key>
+			<string>320</string>
+			<key>icon</key>
+			<string>banner.png</string>
+		</dict>
+		<dict>
+			<key>cell</key>
 			<string>PSGroupCell</string>
 			<key>label</key>
 			<string>Enable/Disable all functionality</string>
@@ -56,7 +66,7 @@
 			<key>cell</key>
 			<string>PSGroupCell</string>
 			<key>label</key>
-			<string>You don't need to respring to apply changes, but here's a button anyway</string>
+			<string>You don&apos;t need to respring to apply changes, but here&apos;s a button anyway</string>
 		</dict>
 		<dict>
 			<key>cell</key>
