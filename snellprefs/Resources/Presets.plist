@@ -9,6 +9,8 @@
 			<string>PSGroupCell</string>
 			<key>label</key>
 			<string>Warning! Enabling a preset will overwrite your current settings</string>
+			<key>footerText</key>
+			<string>You *sometimes* need to respring to fully apply presets</string>
 		</dict>
 		<dict>
 			<key>cell</key>

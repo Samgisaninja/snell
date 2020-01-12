@@ -57,9 +57,9 @@
 	[prefs setBool:FALSE forKey:@"shouldChangeMessageColor"];
 	[prefs setObject:@"FFFFFFFF" forKey:@"customMessageColor"];
 	[prefs setBool:TRUE forKey:@"shouldChangeTopHalfColor"];
-	[prefs setObject:@"44888888" forKey:@"customTopHalfColor"];
+	[prefs setObject:@"88888888" forKey:@"customTopHalfColor"];
 	[prefs setBool:TRUE forKey:@"shouldChangeBottomHalfColor"];
-	[prefs setObject:@"44888888" forKey:@"customBottomHalfColor"];
+	[prefs setObject:@"88888888" forKey:@"customBottomHalfColor"];
 	[prefs setBool:FALSE forKey:@"shouldChangeActionHighlightColor"];
 	[prefs setObject:@"FFFFFFFF" forKey:@"customActionHighlightColor"];
 	[prefs setBool:TRUE forKey:@"hideStockBackdrop"];

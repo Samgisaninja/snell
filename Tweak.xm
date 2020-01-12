@@ -1,7 +1,7 @@
 #import <Cephei/HBPreferences.h>
 #include <CSColorPicker/CSColorPicker.h>
 
-extern CFArrayRef CPBitmapCreateImagesFromData(CFDataRef cpbitmap, void*, int, void*);
+extern "C" CFArrayRef CPBitmapCreateImagesFromData(CFDataRef cpbitmap, void*, int, void*);
 
 BOOL enabled;
 NSString *useWallpaper;
@@ -31,7 +31,7 @@ NSString *borderColor;
 @interface _UIInterfaceActionGroupHeaderScrollView : UIView
 @end
 
-@interface UIAlertController (private)
+@interface UIAlertController ()
 @property (readonly) UIView *_dimmingView;
 @end
 
@@ -43,8 +43,7 @@ NSString *borderColor;
 @interface _UIInterfaceActionVibrantSeparatorView : UIView
 @end
 
-@interface UIView (private)
-@property NSArray *allSubviews;
+@interface UIView ()
 @end
 
 @interface _UIDimmingKnockoutBackdropView : UIView
@@ -105,31 +104,19 @@ NSString *borderColor;
             [self._dimmingView addSubview:colorView];
         }
         if (shouldChangeTitleColor && [self preferredStyle] == 1) {
-            NSArray *alertControllerView = [[self view] allSubviews];
-            for (id object in alertControllerView) {
-                if ([NSStringFromClass([object class]) isEqualToString:@"UILabel"]){
-                    UILabel *possibleTitleLabel = (UILabel *)object;
-                    if ([[possibleTitleLabel text] isEqualToString:[self title]]) {
-                        [possibleTitleLabel setTextColor:[UIColor cscp_colorFromHexString:titleColorHex]];
-                    }
-                }
-            }
+            UILabel *titleLabel = MSHookIvar<UILabel *>([self view], "_titleLabel");
+            [titleLabel setTextColor:[UIColor cscp_colorFromHexString:titleColorHex]];
+            MSHookIvar<UILabel *>([self view], "_titleLabel") = titleLabel;
         }
         if (shouldChangeMessageColor && [self preferredStyle] == 1) {
-            NSArray *alertControllerView = [[self view] allSubviews];
-            for (id object in alertControllerView) {
-                if ([NSStringFromClass([object class]) isEqualToString:@"UILabel"]){
-                    UILabel *possibleMessageLabel = (UILabel *)object;
-                    if ([[possibleMessageLabel text] isEqualToString:[self message]]) {
-                        [possibleMessageLabel setTextColor:[UIColor cscp_colorFromHexString:messageColorHex]];
-                    }
-                }
-            }
+            UILabel *messageLabel = MSHookIvar<UILabel *>([self view], "_messageLabel");
+            [messageLabel setTextColor:[UIColor cscp_colorFromHexString:messageColorHex]];
+            MSHookIvar<UILabel *>([self view], "_messageLabel") = messageLabel;
         }
-    }
-    if (shouldChangeAlertActionTextColor) {
-        [[self view] setTintColor:[UIColor cscp_colorFromHexString:customAlertActionTextColor]];
-    }
+        if (shouldChangeAlertActionTextColor) {
+            [[self view] setTintColor:[UIColor cscp_colorFromHexString:customAlertActionTextColor]];
+        }
+    } 
     %orig;
 }
 
@@ -139,7 +126,9 @@ NSString *borderColor;
 
 -(void)setBounds:(CGRect)arg1{
     if (enabled && hideStockBackdrop) {
-        [self setBackgroundColor:[UIColor cscp_colorFromHexString:@"00000000"]];
+        UIView *backdropView = MSHookIvar<UIView *>(self, "backdropView");
+        [backdropView setHidden:TRUE];
+        MSHookIvar<UIView *>(self, "backdropView") = backdropView;
     }
     if (enabled && shouldUseBorder) {
         [[[self superview] layer] setBorderColor:[UIColor cscp_colorFromHexString:borderColor].CGColor];
@@ -200,7 +189,7 @@ NSString *borderColor;
 %hook _UIInterfaceActionGroupHeaderScrollView
 
 -(id)updateConstraints{
-    if (shouldChangeTopHalfColor) {
+    if (shouldChangeTopHalfColor && enabled) {
         [self setBackgroundColor:[UIColor cscp_colorFromHexString:customTopHalfColor]];
     }
     return %orig;
