@@ -186,6 +186,38 @@
 		</dict>
 		<dict>
 			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>default</key>
+			<false/>
+			<key>defaults</key>
+			<string>com.samgisaninja.snellprefs</string>
+			<key>key</key>
+			<string>shouldChangeAlertActionTextColor</string>
+			<key>label</key>
+			<string>Customize Alert Actions Text Color</string>
+			<key>PostNotification</key>
+			<string>com.samgisaninja.snellprefs/ReloadPrefs</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSLinkCell</string>
+			<key>cellClass</key>
+			<string>CSColorDisplayCell</string>
+			<key>defaults</key>
+			<string>com.samgisaninja.snellprefs</string>
+			<key>PostNotification</key>
+			<string>com.samgisaninja.snellprefs/ReloadPrefs</string>
+			<key>key</key>
+			<string>customAlertActionTextColor</string>
+			<key>label</key>
+			<string>Alert Actions Text Color</string>
+			<key>fallback</key>
+			<string>007AFF</string>
+			<key>alpha</key>
+			<false/>
+		</dict>
+		<dict>
+			<key>cell</key>
 			<string>PSGroupCell</string>
 			<key>label</key>
 			<string>Alert Backdrop Options</string>
@@ -235,38 +267,6 @@
 			<string>00000000</string>
 			<key>alpha</key>
 			<true/>
-		</dict>
-		<dict>
-			<key>cell</key>
-			<string>PSSwitchCell</string>
-			<key>default</key>
-			<false/>
-			<key>defaults</key>
-			<string>com.samgisaninja.snellprefs</string>
-			<key>key</key>
-			<string>shouldChangeAlertActionTextColor</string>
-			<key>label</key>
-			<string>Customize Alert Actions Text Color</string>
-			<key>PostNotification</key>
-			<string>com.samgisaninja.snellprefs/ReloadPrefs</string>
-		</dict>
-		<dict>
-			<key>cell</key>
-			<string>PSLinkCell</string>
-			<key>cellClass</key>
-			<string>CSColorDisplayCell</string>
-			<key>defaults</key>
-			<string>com.samgisaninja.snellprefs</string>
-			<key>PostNotification</key>
-			<string>com.samgisaninja.snellprefs/ReloadPrefs</string>
-			<key>key</key>
-			<string>customAlertActionTextColor</string>
-			<key>label</key>
-			<string>Alert Actions Text Color</string>
-			<key>fallback</key>
-			<string>007AFF</string>
-			<key>alpha</key>
-			<false/>
 		</dict>
 		<dict>
 			<key>cell</key>

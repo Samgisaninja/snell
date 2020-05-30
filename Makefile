@@ -8,7 +8,7 @@ snell_FILES = Tweak.xm
 snell_CFLAGS = -fobjc-arc
 snell_PRIVATE_FRAMEWORKS = AppSupport
 snell_EXTRA_FRAMEWORKS += Cephei
-export TARGET = iphone:12.2:10.0
+export TARGET = iphone:11.2:10.0
 snell_LDFLAGS += -lCSColorPicker
 
 include $(THEOS_MAKE_PATH)/tweak.mk

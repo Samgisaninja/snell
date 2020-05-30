@@ -1,1 +1,4 @@
-rm -r /private/var/mobile/Documents/snell/
+#!/bin/bash
+if [ -d "/private/var/mobile/Documents/snell/" ]; then
+    rm -r /private/var/mobile/Documents/snell/
+fi
