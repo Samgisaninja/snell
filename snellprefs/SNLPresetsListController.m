@@ -36,6 +36,7 @@
 	[prefs setObject:@"FF000000" forKey:@"customBackgroundColor"];
 	[prefs setBool:TRUE forKey:@"shouldUseBorder"];
 	[prefs setObject:@"FFFFFFFF" forKey:@"borderColor"];
+	[prefs setFloat:0.0f forKey:@"borderCornerRadius"];
 	[prefs synchronize];
 	UIAlertController *testAlert = [UIAlertController alertControllerWithTitle:@"Preset saved" message:@"Your preset has been applied" preferredStyle:UIAlertControllerStyleAlert];
     UIAlertAction *defaultAction = [UIAlertAction actionWithTitle:@"This is a 'default' action" style:UIAlertActionStyleDefault handler:nil];
@@ -71,6 +72,7 @@
 	[prefs setObject:@"FF000000" forKey:@"customBackgroundColor"];
 	[prefs setBool:FALSE forKey:@"shouldUseBorder"];
 	[prefs setObject:@"FFFFFFFF" forKey:@"borderColor"];
+	[prefs setFloat:10.0f forKey:@"borderCornerRadius"];
 	[prefs synchronize];
 	UIAlertController *testAlert = [UIAlertController alertControllerWithTitle:@"Preset saved" message:@"Your preset has been applied" preferredStyle:UIAlertControllerStyleAlert];
     UIAlertAction *defaultAction = [UIAlertAction actionWithTitle:@"This is a 'default' action" style:UIAlertActionStyleDefault handler:nil];
@@ -106,6 +108,7 @@
 	[prefs setObject:@"FF000000" forKey:@"customBackgroundColor"];
 	[prefs setBool:TRUE forKey:@"shouldUseBorder"];
 	[prefs setObject:@"FF77C3EC" forKey:@"borderColor"];
+	[prefs setFloat:10.0f forKey:@"borderCornerRadius"];
 	[prefs synchronize];
 	UIAlertController *testAlert = [UIAlertController alertControllerWithTitle:@"Preset saved" message:@"Your preset has been applied" preferredStyle:UIAlertControllerStyleAlert];
     UIAlertAction *defaultAction = [UIAlertAction actionWithTitle:@"This is a 'default' action" style:UIAlertActionStyleDefault handler:nil];
@@ -141,6 +144,7 @@
 	[prefs setObject:@"FF013220" forKey:@"customBackgroundColor"];
 	[prefs setBool:TRUE forKey:@"shouldUseBorder"];
 	[prefs setObject:@"FF013220" forKey:@"borderColor"];
+	[prefs setFloat:10.0f forKey:@"borderCornerRadius"];
 	[prefs synchronize];
 	UIAlertController *testAlert = [UIAlertController alertControllerWithTitle:@"Preset saved" message:@"Your preset has been applied" preferredStyle:UIAlertControllerStyleAlert];
     UIAlertAction *defaultAction = [UIAlertAction actionWithTitle:@"This is a 'default' action" style:UIAlertActionStyleDefault handler:nil];
@@ -176,6 +180,7 @@
 	[prefs setObject:@"FF013220" forKey:@"customBackgroundColor"];
 	[prefs setBool:TRUE forKey:@"shouldUseBorder"];
 	[prefs setObject:@"FF000000" forKey:@"borderColor"];
+	[prefs setFloat:10.0f forKey:@"borderCornerRadius"];
 	[prefs synchronize];
 	UIAlertController *testAlert = [UIAlertController alertControllerWithTitle:@"Preset saved" message:@"Your preset has been applied" preferredStyle:UIAlertControllerStyleAlert];
     UIAlertAction *defaultAction = [UIAlertAction actionWithTitle:@"This is a 'default' action" style:UIAlertActionStyleDefault handler:nil];
@@ -211,6 +216,7 @@
 	[prefs setObject:@"AA241571" forKey:@"customBackgroundColor"];
 	[prefs setBool:TRUE forKey:@"shouldUseBorder"];
 	[prefs setObject:@"FFDAA520" forKey:@"borderColor"];
+	[prefs setFloat:10.0f forKey:@"borderCornerRadius"];
 	[prefs synchronize];
 	UIAlertController *testAlert = [UIAlertController alertControllerWithTitle:@"Preset saved" message:@"Your preset has been applied" preferredStyle:UIAlertControllerStyleAlert];
     UIAlertAction *defaultAction = [UIAlertAction actionWithTitle:@"This is a 'default' action" style:UIAlertActionStyleDefault handler:nil];

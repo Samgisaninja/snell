@@ -27,6 +27,7 @@ BOOL shouldOverlayBackgroundColor;
 NSString *customBackgroundColor;
 BOOL shouldUseBorder;
 NSString *borderColor;
+double borderCornerRadius;
 
 @interface _UIInterfaceActionGroupHeaderScrollView : UIView
 @end
@@ -133,6 +134,7 @@ NSString *borderColor;
     if (enabled && shouldUseBorder) {
         [[[self superview] layer] setBorderColor:[UIColor cscp_colorFromHexString:borderColor].CGColor];
         [[[self superview] layer] setBorderWidth:1.0f];
+        [[[self superview] layer] setCornerRadius:borderCornerRadius];
     }
     %orig;
 }
@@ -261,6 +263,7 @@ NSString *borderColor;
         [preferences registerObject:&customBackgroundColor default:@"00000000" forKey:@"customBackgroundColor"];
         [preferences registerBool:&shouldUseBorder default:FALSE forKey:@"shouldUseBorder"];
         [preferences registerObject:&borderColor default:@"FF00000000" forKey:@"borderColor"];
+        [preferences registerDouble:&borderCornerRadius default:10.0f forKey:@"borderCornerRadius"];
         %init;
     }
 }

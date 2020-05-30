@@ -221,6 +221,8 @@
 			<string>PSGroupCell</string>
 			<key>label</key>
 			<string>Alert Backdrop Options</string>
+			<key>footerText</key>
+			<string>Highlight color is displayed when the action is selected</string>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -337,6 +339,8 @@
 			<string>PSGroupCell</string>
 			<key>label</key>
 			<string>Separator Options</string>
+			<key>footerText</key>
+			<string>Corner radius of the border, in pixels. 0 is completely square, 10 is the iOS default</string>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -411,6 +415,30 @@
 			<string>00000000</string>
 			<key>alpha</key>
 			<true/>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSliderCell</string>
+			<key>defaults</key>
+			<string>com.samgisaninja.snellprefs</string>
+			<key>PostNotification</key>
+			<string>com.samgisaninja.snellprefs/ReloadPrefs</string>
+			<key>key</key>
+			<string>borderCornerRadius</string>
+			<key>label</key>
+			<string>Border Corner Radius</string>
+			<key>default</key>
+			<integer>10</integer>
+			<key>min</key>
+			<integer>0</integer>
+			<key>max</key>
+			<integer>20</integer>
+			<key>showValue</key>
+			<true/>
+			<key>isSegmented</key>
+			<true/>
+			<key>segmentCount</key>
+			<integer>20</integer>
 		</dict>
 	</array>
 	<key>title</key>

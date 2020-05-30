@@ -1,7 +1,7 @@
 Package: com.samgisaninja.snell
 Name: snell
 Depends: mobilesubstrate, com.creaturesurvive.libcscolorpicker, ws.hbang.common (>= 1.14)
-Version: 1.0.1
+Version: 1.0.2
 Architecture: iphoneos-arm
 Description: Alert customization to the max
 Maintainer: Samg_is_a_Ninja
