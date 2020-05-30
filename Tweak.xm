@@ -237,27 +237,30 @@ NSString *borderColor;
 %end
 
 %ctor {
-    HBPreferences *preferences = [[HBPreferences alloc] initWithIdentifier:@"com.samgisaninja.snellprefs"];
-    [preferences registerBool:&enabled default:TRUE forKey:@"isEnabled"];
-    [preferences registerObject:&useWallpaper default:@"homescreenBackground" forKey:@"useWallpaper"];
-    [preferences registerObject:&blurStyle default:@"unblurredStyle" forKey:@"blurStyle"];
-    [preferences registerBool:&shouldChangeTitleColor default:FALSE forKey:@"shouldChangeTitleColor"];
-    [preferences registerObject:&titleColorHex default:@"FF000000" forKey:@"customTitleColor"];
-    [preferences registerBool:&shouldChangeMessageColor default:FALSE forKey:@"shouldChangeMessageColor"];
-    [preferences registerObject:&messageColorHex default:@"FF000000" forKey:@"customMessageColor"];
-    [preferences registerBool:&shouldChangeTopHalfColor default:FALSE forKey:@"shouldChangeTopHalfColor"];
-    [preferences registerObject:&customTopHalfColor default:@"00000000" forKey:@"customTopHalfColor"];
-    [preferences registerBool:&shouldChangeBottomHalfColor default:FALSE forKey:@"shouldChangeBottomHalfColor"];
-    [preferences registerObject:&customBottomHalfColor default:@"00000000" forKey:@"customBottomHalfColor"];
-    [preferences registerBool:&shouldChangeActionHighlightColor default:FALSE forKey:@"shouldChangeActionHighlightColor"];
-    [preferences registerObject:&customActionHighlightColor default:@"FF007AFF" forKey:@"customActionHighlightColor"];
-    [preferences registerBool:&hideStockBackdrop default:FALSE forKey:@"hideStockBackdrop"];
-    [preferences registerObject:&separatorStyle default:@"stockSeparators" forKey:@"separatorStyle"];
-    [preferences registerObject:&customSeparatorColor default:@"007AFF" forKey:@"customSeparatorColor"];
-    [preferences registerBool:&shouldChangeAlertActionTextColor default:FALSE forKey:@"shouldChangeAlertActionTextColor"];
-    [preferences registerObject:&customAlertActionTextColor default:@"007AFF" forKey:@"customAlertActionTextColor"];
-    [preferences registerBool:&shouldOverlayBackgroundColor default:FALSE forKey:@"shouldOverlayBackgroundColor"];
-    [preferences registerObject:&customBackgroundColor default:@"00000000" forKey:@"customBackgroundColor"];
-    [preferences registerBool:&shouldUseBorder default:FALSE forKey:@"shouldUseBorder"];
-    [preferences registerObject:&borderColor default:@"FF00000000" forKey:@"borderColor"];
+    if ([[[[NSProcessInfo processInfo] arguments] objectAtIndex:0] containsString:@"/Application"] || [[[[NSProcessInfo processInfo] arguments] objectAtIndex:0] containsString:@"SpringBoard.app"]) {
+        HBPreferences *preferences = [[HBPreferences alloc] initWithIdentifier:@"com.samgisaninja.snellprefs"];
+        [preferences registerBool:&enabled default:TRUE forKey:@"isEnabled"];
+        [preferences registerObject:&useWallpaper default:@"homescreenBackground" forKey:@"useWallpaper"];
+        [preferences registerObject:&blurStyle default:@"unblurredStyle" forKey:@"blurStyle"];
+        [preferences registerBool:&shouldChangeTitleColor default:FALSE forKey:@"shouldChangeTitleColor"];
+        [preferences registerObject:&titleColorHex default:@"FF000000" forKey:@"customTitleColor"];
+        [preferences registerBool:&shouldChangeMessageColor default:FALSE forKey:@"shouldChangeMessageColor"];
+        [preferences registerObject:&messageColorHex default:@"FF000000" forKey:@"customMessageColor"];
+        [preferences registerBool:&shouldChangeTopHalfColor default:FALSE forKey:@"shouldChangeTopHalfColor"];
+        [preferences registerObject:&customTopHalfColor default:@"00000000" forKey:@"customTopHalfColor"];
+        [preferences registerBool:&shouldChangeBottomHalfColor default:FALSE forKey:@"shouldChangeBottomHalfColor"];
+        [preferences registerObject:&customBottomHalfColor default:@"00000000" forKey:@"customBottomHalfColor"];
+        [preferences registerBool:&shouldChangeActionHighlightColor default:FALSE forKey:@"shouldChangeActionHighlightColor"];
+        [preferences registerObject:&customActionHighlightColor default:@"FF007AFF" forKey:@"customActionHighlightColor"];
+        [preferences registerBool:&hideStockBackdrop default:FALSE forKey:@"hideStockBackdrop"];
+        [preferences registerObject:&separatorStyle default:@"stockSeparators" forKey:@"separatorStyle"];
+        [preferences registerObject:&customSeparatorColor default:@"007AFF" forKey:@"customSeparatorColor"];
+        [preferences registerBool:&shouldChangeAlertActionTextColor default:FALSE forKey:@"shouldChangeAlertActionTextColor"];
+        [preferences registerObject:&customAlertActionTextColor default:@"007AFF" forKey:@"customAlertActionTextColor"];
+        [preferences registerBool:&shouldOverlayBackgroundColor default:FALSE forKey:@"shouldOverlayBackgroundColor"];
+        [preferences registerObject:&customBackgroundColor default:@"00000000" forKey:@"customBackgroundColor"];
+        [preferences registerBool:&shouldUseBorder default:FALSE forKey:@"shouldUseBorder"];
+        [preferences registerObject:&borderColor default:@"FF00000000" forKey:@"borderColor"];
+        %init;
+    }
 }
