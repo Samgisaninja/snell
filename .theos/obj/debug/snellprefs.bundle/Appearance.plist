@@ -339,8 +339,8 @@
 			<string>PSGroupCell</string>
 			<key>label</key>
 			<string>Separator Options</string>
-			<key>footeTextr</key>
-			<string>Border corner radius, in pixels. 0 is completely square, 5 is the iOS default</string>
+			<key>footerText</key>
+			<string>Corner radius of the border, in pixels. 0 is completely square, 10 is the iOS default</string>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -428,17 +428,17 @@
 			<key>label</key>
 			<string>Border Corner Radius</string>
 			<key>default</key>
-			<integer>0</integer>
+			<integer>10</integer>
 			<key>min</key>
 			<integer>0</integer>
 			<key>max</key>
-			<integer>10</integer>
+			<integer>20</integer>
 			<key>showValue</key>
 			<true/>
 			<key>isSegmented</key>
 			<true/>
 			<key>segmentCount</key>
-			<integer>10</integer>
+			<integer>20</integer>
 		</dict>
 	</array>
 	<key>title</key>
