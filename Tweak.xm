@@ -173,7 +173,6 @@ double backdropCornerRadius;
 %hook _UIAlertControllerActionView
 
 -(void)_updateStyle{
-    NSLog(@"SNELL TESTING UPDATESTYLE");
     if (enabled) {
         if (shouldChangeBottomHalfColor) {
             [self setBackgroundColor:[UIColor cscp_colorFromHexString:customBottomHalfColor]];
@@ -216,9 +215,7 @@ double backdropCornerRadius;
 -(id)updateConstraints{
     [self setClipsToBounds:TRUE];
     [[self layer] setCornerRadius:backdropCornerRadius];
-    if (@available(iOS 11, *)) {
-        [[self layer] setMaskedCorners:kCALayerMinXMinYCorner | kCALayerMaxXMinYCorner];
-    }
+    [[self layer] setMaskedCorners:kCALayerMinXMinYCorner | kCALayerMaxXMinYCorner];
     if (shouldChangeTopHalfColor && enabled) {
         [self setBackgroundColor:[UIColor cscp_colorFromHexString:customTopHalfColor]];
     }
@@ -267,7 +264,6 @@ double backdropCornerRadius;
 %end
 
 %ctor {
-    NSLog(@"SNELL TESTING");
     if ([[[[NSProcessInfo processInfo] arguments] objectAtIndex:0] containsString:@"/Application"] || [[[[NSProcessInfo processInfo] arguments] objectAtIndex:0] containsString:@"SpringBoard.app"]) {
         HBPreferences *preferences = [[HBPreferences alloc] initWithIdentifier:@"com.samgisaninja.snellprefs"];
         [preferences registerBool:&enabled default:TRUE forKey:@"isEnabled"];

@@ -1,4 +1,4 @@
-export ARCHS = arm64 arm64e armv7 armv7s
+export ARCHS = arm64 arm64e
 
 INSTALL_TARGET_PROCESSES = SpringBoard
 
@@ -10,7 +10,7 @@ snell_FILES = Tweak.xm
 snell_CFLAGS = -fobjc-arc
 snell_PRIVATE_FRAMEWORKS = AppSupport
 snell_EXTRA_FRAMEWORKS += Cephei
-export TARGET = iphone:11.2:10.0
+export TARGET = iphone:13.0:12.0
 snell_LDFLAGS += -lCSColorPicker
 
 include $(THEOS_MAKE_PATH)/tweak.mk

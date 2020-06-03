@@ -86,7 +86,7 @@ double backdropCornerRadius;
 #define _LOGOS_RETURN_RETAINED
 #endif
 
-@class _UIInterfaceActionVibrantSeparatorView; @class UIAlertController; @class _UIInterfaceActionGroupHeaderScrollView; @class _UIAlertControllerActionView; @class _UIDimmingKnockoutBackdropView; @class SpringBoard; 
+@class _UIInterfaceActionVibrantSeparatorView; @class _UIAlertControllerActionView; @class SpringBoard; @class UIAlertController; @class _UIInterfaceActionGroupHeaderScrollView; @class _UIDimmingKnockoutBackdropView; 
 static void (*_logos_orig$_ungrouped$UIAlertController$viewWillAppear$)(_LOGOS_SELF_TYPE_NORMAL UIAlertController* _LOGOS_SELF_CONST, SEL, BOOL); static void _logos_method$_ungrouped$UIAlertController$viewWillAppear$(_LOGOS_SELF_TYPE_NORMAL UIAlertController* _LOGOS_SELF_CONST, SEL, BOOL); static void (*_logos_orig$_ungrouped$_UIDimmingKnockoutBackdropView$setBounds$)(_LOGOS_SELF_TYPE_NORMAL _UIDimmingKnockoutBackdropView* _LOGOS_SELF_CONST, SEL, CGRect); static void _logos_method$_ungrouped$_UIDimmingKnockoutBackdropView$setBounds$(_LOGOS_SELF_TYPE_NORMAL _UIDimmingKnockoutBackdropView* _LOGOS_SELF_CONST, SEL, CGRect); static void (*_logos_orig$_ungrouped$_UIInterfaceActionVibrantSeparatorView$_setupEffectView)(_LOGOS_SELF_TYPE_NORMAL _UIInterfaceActionVibrantSeparatorView* _LOGOS_SELF_CONST, SEL); static void _logos_method$_ungrouped$_UIInterfaceActionVibrantSeparatorView$_setupEffectView(_LOGOS_SELF_TYPE_NORMAL _UIInterfaceActionVibrantSeparatorView* _LOGOS_SELF_CONST, SEL); static void (*_logos_orig$_ungrouped$_UIAlertControllerActionView$_updateStyle)(_LOGOS_SELF_TYPE_NORMAL _UIAlertControllerActionView* _LOGOS_SELF_CONST, SEL); static void _logos_method$_ungrouped$_UIAlertControllerActionView$_updateStyle(_LOGOS_SELF_TYPE_NORMAL _UIAlertControllerActionView* _LOGOS_SELF_CONST, SEL); static void (*_logos_orig$_ungrouped$_UIAlertControllerActionView$setHighlighted$)(_LOGOS_SELF_TYPE_NORMAL _UIAlertControllerActionView* _LOGOS_SELF_CONST, SEL, BOOL); static void _logos_method$_ungrouped$_UIAlertControllerActionView$setHighlighted$(_LOGOS_SELF_TYPE_NORMAL _UIAlertControllerActionView* _LOGOS_SELF_CONST, SEL, BOOL); static id (*_logos_orig$_ungrouped$_UIInterfaceActionGroupHeaderScrollView$updateConstraints)(_LOGOS_SELF_TYPE_NORMAL _UIInterfaceActionGroupHeaderScrollView* _LOGOS_SELF_CONST, SEL); static id _logos_method$_ungrouped$_UIInterfaceActionGroupHeaderScrollView$updateConstraints(_LOGOS_SELF_TYPE_NORMAL _UIInterfaceActionGroupHeaderScrollView* _LOGOS_SELF_CONST, SEL); static void (*_logos_orig$_ungrouped$SpringBoard$applicationDidFinishLaunching$)(_LOGOS_SELF_TYPE_NORMAL SpringBoard* _LOGOS_SELF_CONST, SEL, id); static void _logos_method$_ungrouped$SpringBoard$applicationDidFinishLaunching$(_LOGOS_SELF_TYPE_NORMAL SpringBoard* _LOGOS_SELF_CONST, SEL, id); 
 
 #line 67 "Tweak.xm"
@@ -199,21 +199,21 @@ static void _logos_method$_ungrouped$_UIInterfaceActionVibrantSeparatorView$_set
 
 
 static void _logos_method$_ungrouped$_UIAlertControllerActionView$_updateStyle(_LOGOS_SELF_TYPE_NORMAL _UIAlertControllerActionView* _LOGOS_SELF_CONST __unused self, SEL __unused _cmd){
-    NSLog(@"SNELL TESTING UPDATESTYLE");
     if (enabled) {
-        if (shouldChangeBottomHalfColor) {
-            [self setBackgroundColor:[UIColor cscp_colorFromHexString:customBottomHalfColor]];
-        }
         UIStackView *alertActionsView = (UIStackView *)[[self superview] superview];
         if ([[alertActionsView arrangedSubviews] count] > 0) {
             _UIInterfaceActionCustomViewRepresentationView *lastActionView = [[alertActionsView arrangedSubviews] lastObject];
             if ([[[self action] title] isEqualToString:[[[lastActionView _actionContentView] action] title]]) {
+                NSLog(@"SNELL TESTING: %@ was equal to %@", [[self action] title], [[[lastActionView _actionContentView] action] title]);
                 [self setClipsToBounds:TRUE];
                 [[self layer] setCornerRadius:backdropCornerRadius];
-                if (@available(iOS 11, *)) {
-                    [[self layer] setMaskedCorners:kCALayerMinXMaxYCorner | kCALayerMaxXMaxYCorner];
-                }
+                [[self layer] setMaskedCorners:kCALayerMinXMaxYCorner | kCALayerMaxXMaxYCorner];
+            } else {
+                NSLog(@"SNELL TESTING: %@ was not equal to %@", [[self action] title], [[[lastActionView _actionContentView] action] title]);
             }
+        }
+        if (shouldChangeBottomHalfColor) {
+            [self setBackgroundColor:[UIColor cscp_colorFromHexString:customBottomHalfColor]];
         }
     }
     _logos_orig$_ungrouped$_UIAlertControllerActionView$_updateStyle(self, _cmd);
@@ -242,9 +242,7 @@ static void _logos_method$_ungrouped$_UIAlertControllerActionView$setHighlighted
 static id _logos_method$_ungrouped$_UIInterfaceActionGroupHeaderScrollView$updateConstraints(_LOGOS_SELF_TYPE_NORMAL _UIInterfaceActionGroupHeaderScrollView* _LOGOS_SELF_CONST __unused self, SEL __unused _cmd){
     [self setClipsToBounds:TRUE];
     [[self layer] setCornerRadius:backdropCornerRadius];
-    if (@available(iOS 11, *)) {
-        [[self layer] setMaskedCorners:kCALayerMinXMinYCorner | kCALayerMaxXMinYCorner];
-    }
+    [[self layer] setMaskedCorners:kCALayerMinXMinYCorner | kCALayerMaxXMinYCorner];
     if (shouldChangeTopHalfColor && enabled) {
         [self setBackgroundColor:[UIColor cscp_colorFromHexString:customTopHalfColor]];
     }
@@ -292,8 +290,7 @@ static void _logos_method$_ungrouped$SpringBoard$applicationDidFinishLaunching$(
 
 
 
-static __attribute__((constructor)) void _logosLocalCtor_0553463c(int __unused argc, char __unused **argv, char __unused **envp) {
-    NSLog(@"SNELL TESTING");
+static __attribute__((constructor)) void _logosLocalCtor_2b60e928(int __unused argc, char __unused **argv, char __unused **envp) {
     if ([[[[NSProcessInfo processInfo] arguments] objectAtIndex:0] containsString:@"/Application"] || [[[[NSProcessInfo processInfo] arguments] objectAtIndex:0] containsString:@"SpringBoard.app"]) {
         HBPreferences *preferences = [[HBPreferences alloc] initWithIdentifier:@"com.samgisaninja.snellprefs"];
         [preferences registerBool:&enabled default:TRUE forKey:@"isEnabled"];
