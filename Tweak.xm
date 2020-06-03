@@ -30,12 +30,15 @@ BOOL shouldUseBorder;
 NSString *borderColor;
 double borderCornerRadius;
 double backdropCornerRadius;
+BOOL hideCancelViewBackdrop;
+BOOL useInHapticTouchMenus;
 
 @interface _UIInterfaceActionGroupHeaderScrollView : UIView
 @end
 
 @interface UIAlertController ()
 @property (readonly) UIView *_dimmingView;
+@property UIView *_foregroundView;
 @end
 
 @interface _UIAlertControllerActionView : UIView
@@ -49,16 +52,21 @@ double backdropCornerRadius;
 @end
 
 @interface _UIInterfaceActionVibrantSeparatorView : UIView
+-(id)_viewControllerForAncestor;
 @end
 
 @interface UIView ()
 @end
 
 @interface _UIDimmingKnockoutBackdropView : UIView
+-(id)_viewControllerForAncestor;
 @end
 
 @interface SBFStaticWallpaperView : UIView
 -(UIImage *)_displayedImage;
+@end
+
+@interface _UIAlertControlleriOSActionSheetCancelBackgroundView : UIView
 @end
 
 #pragma mark Appearance
@@ -124,6 +132,8 @@ double backdropCornerRadius;
         if (shouldChangeAlertActionTextColor) {
             [[self view] setTintColor:[UIColor cscp_colorFromHexString:customAlertActionTextColor]];
         }
+        [[self _foregroundView] setClipsToBounds:TRUE];
+        [[[self _foregroundView] layer] setCornerRadius:backdropCornerRadius];
     } 
     %orig;
 }
@@ -133,21 +143,23 @@ double backdropCornerRadius;
 %hook _UIDimmingKnockoutBackdropView
 
 -(void)setBounds:(CGRect)arg1{
-    %orig;
-    if (enabled && hideStockBackdrop) {
-        UIView *backdropView = MSHookIvar<UIView *>(self, "backdropView");
-        [backdropView setHidden:TRUE];
-        MSHookIvar<UIView *>(self, "backdropView") = backdropView;
-    }
-    if (enabled && shouldUseBorder) {
-        [[[self superview] layer] setBorderColor:[UIColor cscp_colorFromHexString:borderColor].CGColor];
-        [[[self superview] layer] setBorderWidth:1.0f];
-        [[[self superview] layer] setCornerRadius:borderCornerRadius];
-    }
     if (enabled) {
+        if ([NSStringFromClass([[self _viewControllerForAncestor] class]) isEqualToString:@"UIAlertController"] || useInHapticTouchMenus) {
+            if (hideStockBackdrop) {
+                UIView *backdropView = MSHookIvar<UIView *>(self, "backdropView");
+                [backdropView setHidden:TRUE];
+                MSHookIvar<UIView *>(self, "backdropView") = backdropView;
+            }
+            if (shouldUseBorder) {
+                [[[self superview] layer] setBorderColor:[UIColor cscp_colorFromHexString:borderColor].CGColor];
+                [[[self superview] layer] setBorderWidth:1.0f];
+                [[[self superview] layer] setCornerRadius:borderCornerRadius];
+            }
         [self setClipsToBounds:TRUE];
         [[self layer] setCornerRadius:backdropCornerRadius];
+        }
     }
+    %orig;
 }
 
 %end
@@ -177,17 +189,6 @@ double backdropCornerRadius;
         if (shouldChangeBottomHalfColor) {
             [self setBackgroundColor:[UIColor cscp_colorFromHexString:customBottomHalfColor]];
         }
-        UIStackView *alertActionsView = (UIStackView *)[[self superview] superview];
-        if ([[alertActionsView arrangedSubviews] count] > 0) {
-            _UIInterfaceActionCustomViewRepresentationView *lastActionView = [[alertActionsView arrangedSubviews] lastObject];
-            if ([[[self action] title] isEqualToString:[[[lastActionView _actionContentView] action] title]]) {
-                [self setClipsToBounds:TRUE];
-                [[self layer] setCornerRadius:backdropCornerRadius];
-                if (@available(iOS 11, *)) {
-                    [[self layer] setMaskedCorners:kCALayerMinXMaxYCorner | kCALayerMaxXMaxYCorner];
-                }
-            }
-        }
     }
     %orig;
 }
@@ -213,9 +214,6 @@ double backdropCornerRadius;
 %hook _UIInterfaceActionGroupHeaderScrollView
 
 -(id)updateConstraints{
-    [self setClipsToBounds:TRUE];
-    [[self layer] setCornerRadius:backdropCornerRadius];
-    [[self layer] setMaskedCorners:kCALayerMinXMinYCorner | kCALayerMaxXMinYCorner];
     if (shouldChangeTopHalfColor && enabled) {
         [self setBackgroundColor:[UIColor cscp_colorFromHexString:customTopHalfColor]];
     }
@@ -263,6 +261,19 @@ double backdropCornerRadius;
 
 %end
 
+%hook _UIAlertControlleriOSActionSheetCancelBackgroundView
+
+
+-(void)setHighlighted:(BOOL)arg1{
+    if (enabled && hideCancelViewBackdrop) {
+        [self setHidden:TRUE];
+    }
+    %orig;
+}
+
+
+%end
+
 %ctor {
     if ([[[[NSProcessInfo processInfo] arguments] objectAtIndex:0] containsString:@"/Application"] || [[[[NSProcessInfo processInfo] arguments] objectAtIndex:0] containsString:@"SpringBoard.app"]) {
         HBPreferences *preferences = [[HBPreferences alloc] initWithIdentifier:@"com.samgisaninja.snellprefs"];
@@ -290,6 +301,8 @@ double backdropCornerRadius;
         [preferences registerObject:&borderColor default:@"FF00000000" forKey:@"borderColor"];
         [preferences registerDouble:&borderCornerRadius default:10.0f forKey:@"borderCornerRadius"];
         [preferences registerDouble:&backdropCornerRadius default:10.0f forKey:@"backdropCornerRadius"];
+        [preferences registerBool:&hideCancelViewBackdrop default:TRUE forKey:@"hideCancelViewBackdrop"];
+        [preferences registerBool:&useInHapticTouchMenus default:TRUE forKey:@"useInHapticTouchMenus"];
         %init;
     }
 }

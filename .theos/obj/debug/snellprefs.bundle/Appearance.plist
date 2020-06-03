@@ -318,30 +318,6 @@
 		</dict>
 		<dict>
 			<key>cell</key>
-			<string>PSSliderCell</string>
-			<key>defaults</key>
-			<string>com.samgisaninja.snellprefs</string>
-			<key>PostNotification</key>
-			<string>com.samgisaninja.snellprefs/ReloadPrefs</string>
-			<key>key</key>
-			<string>backdropCornerRadius</string>
-			<key>label</key>
-			<string>Backdrop Corner Radius</string>
-			<key>default</key>
-			<integer>10</integer>
-			<key>min</key>
-			<integer>0</integer>
-			<key>max</key>
-			<integer>20</integer>
-			<key>showValue</key>
-			<true/>
-			<key>isSegmented</key>
-			<true/>
-			<key>segmentCount</key>
-			<integer>20</integer>
-		</dict>
-		<dict>
-			<key>cell</key>
 			<string>PSLinkCell</string>
 			<key>cellClass</key>
 			<string>CSColorDisplayCell</string>
@@ -360,11 +336,35 @@
 		</dict>
 		<dict>
 			<key>cell</key>
+			<string>PSSliderCell</string>
+			<key>defaults</key>
+			<string>com.samgisaninja.snellprefs</string>
+			<key>PostNotification</key>
+			<string>com.samgisaninja.snellprefs/ReloadPrefs</string>
+			<key>key</key>
+			<string>backdropCornerRadius</string>
+			<key>label</key>
+			<string>Backdrop Corner Radius</string>
+			<key>default</key>
+			<integer>10</integer>
+			<key>min</key>
+			<integer>10</integer>
+			<key>max</key>
+			<integer>20</integer>
+			<key>showValue</key>
+			<true/>
+			<key>isSegmented</key>
+			<true/>
+			<key>segmentCount</key>
+			<integer>10</integer>
+		</dict>
+		<dict>
+			<key>cell</key>
 			<string>PSGroupCell</string>
 			<key>label</key>
 			<string>Separator Options</string>
 			<key>footerText</key>
-			<string>Corner radius of the border, in pixels. 0 is completely square, 10 is the iOS default. This should probably be the same as the backdrop color</string>
+			<string>Corner radius of the border, in pixels. 10 is the iOS default. This should probably be the same as the backdrop radius</string>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -463,6 +463,40 @@
 			<true/>
 			<key>segmentCount</key>
 			<integer>20</integer>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>label</key>
+			<string>Other</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>default</key>
+			<true/>
+			<key>defaults</key>
+			<string>com.samgisaninja.snellprefs</string>
+			<key>key</key>
+			<string>hideCancelViewBackdrop</string>
+			<key>label</key>
+			<string>Disable highlighting of "cancel" action in actionsheets</string>
+			<key>PostNotification</key>
+			<string>com.samgisaninja.snellprefs/ReloadPrefs</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>default</key>
+			<true/>
+			<key>defaults</key>
+			<string>com.samgisaninja.snellprefs</string>
+			<key>key</key>
+			<string>useInHapticTouchMenus</string>
+			<key>label</key>
+			<string>Apply snell to haptic touch menus</string>
+			<key>PostNotification</key>
+			<string>com.samgisaninja.snellprefs/ReloadPrefs</string>
 		</dict>
 	</array>
 	<key>title</key>
