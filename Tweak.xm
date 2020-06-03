@@ -1,5 +1,6 @@
 #import <Cephei/HBPreferences.h>
 #include <CSColorPicker/CSColorPicker.h>
+#include <RemoteLog.h>
 
 extern "C" CFArrayRef CPBitmapCreateImagesFromData(CFDataRef cpbitmap, void*, int, void*);
 
@@ -28,6 +29,7 @@ NSString *customBackgroundColor;
 BOOL shouldUseBorder;
 NSString *borderColor;
 double borderCornerRadius;
+double backdropCornerRadius;
 
 @interface _UIInterfaceActionGroupHeaderScrollView : UIView
 @end
@@ -39,6 +41,11 @@ double borderCornerRadius;
 @interface _UIAlertControllerActionView : UIView
 -(void)setBackgroundColor:(UIColor *)arg1;
 -(UIAlertAction *)action;
+-(UIAlertController *)alertController;
+@end
+
+@interface _UIInterfaceActionCustomViewRepresentationView : UIView
+-(_UIAlertControllerActionView *)_actionContentView;
 @end
 
 @interface _UIInterfaceActionVibrantSeparatorView : UIView
@@ -126,6 +133,7 @@ double borderCornerRadius;
 %hook _UIDimmingKnockoutBackdropView
 
 -(void)setBounds:(CGRect)arg1{
+    %orig;
     if (enabled && hideStockBackdrop) {
         UIView *backdropView = MSHookIvar<UIView *>(self, "backdropView");
         [backdropView setHidden:TRUE];
@@ -136,7 +144,10 @@ double borderCornerRadius;
         [[[self superview] layer] setBorderWidth:1.0f];
         [[[self superview] layer] setCornerRadius:borderCornerRadius];
     }
-    %orig;
+    if (enabled) {
+        [self setClipsToBounds:TRUE];
+        [[self layer] setCornerRadius:backdropCornerRadius];
+    }
 }
 
 %end
@@ -162,9 +173,21 @@ double borderCornerRadius;
 %hook _UIAlertControllerActionView
 
 -(void)_updateStyle{
+    NSLog(@"SNELL TESTING UPDATESTYLE");
     if (enabled) {
         if (shouldChangeBottomHalfColor) {
             [self setBackgroundColor:[UIColor cscp_colorFromHexString:customBottomHalfColor]];
+        }
+        UIStackView *alertActionsView = (UIStackView *)[[self superview] superview];
+        if ([[alertActionsView arrangedSubviews] count] > 0) {
+            _UIInterfaceActionCustomViewRepresentationView *lastActionView = [[alertActionsView arrangedSubviews] lastObject];
+            if ([[[self action] title] isEqualToString:[[[lastActionView _actionContentView] action] title]]) {
+                [self setClipsToBounds:TRUE];
+                [[self layer] setCornerRadius:backdropCornerRadius];
+                if (@available(iOS 11, *)) {
+                    [[self layer] setMaskedCorners:kCALayerMinXMaxYCorner | kCALayerMaxXMaxYCorner];
+                }
+            }
         }
     }
     %orig;
@@ -191,6 +214,11 @@ double borderCornerRadius;
 %hook _UIInterfaceActionGroupHeaderScrollView
 
 -(id)updateConstraints{
+    [self setClipsToBounds:TRUE];
+    [[self layer] setCornerRadius:backdropCornerRadius];
+    if (@available(iOS 11, *)) {
+        [[self layer] setMaskedCorners:kCALayerMinXMinYCorner | kCALayerMaxXMinYCorner];
+    }
     if (shouldChangeTopHalfColor && enabled) {
         [self setBackgroundColor:[UIColor cscp_colorFromHexString:customTopHalfColor]];
     }
@@ -239,6 +267,7 @@ double borderCornerRadius;
 %end
 
 %ctor {
+    NSLog(@"SNELL TESTING");
     if ([[[[NSProcessInfo processInfo] arguments] objectAtIndex:0] containsString:@"/Application"] || [[[[NSProcessInfo processInfo] arguments] objectAtIndex:0] containsString:@"SpringBoard.app"]) {
         HBPreferences *preferences = [[HBPreferences alloc] initWithIdentifier:@"com.samgisaninja.snellprefs"];
         [preferences registerBool:&enabled default:TRUE forKey:@"isEnabled"];
@@ -264,6 +293,7 @@ double borderCornerRadius;
         [preferences registerBool:&shouldUseBorder default:FALSE forKey:@"shouldUseBorder"];
         [preferences registerObject:&borderColor default:@"FF00000000" forKey:@"borderColor"];
         [preferences registerDouble:&borderCornerRadius default:10.0f forKey:@"borderCornerRadius"];
+        [preferences registerDouble:&backdropCornerRadius default:10.0f forKey:@"backdropCornerRadius"];
         %init;
     }
 }

@@ -1,5 +1,5 @@
-/Users/samgardner/Documents/snell/.theos/obj/debug/armv7/Tweak.xm.abbfb30b.o: \
-  /Users/samgardner/Documents/snell/.theos/obj/debug/armv7/Tweak.xm.mm \
+/Users/samgardner/Documents/snell/.theos/obj/debug/arm64e/Tweak.xm.3c1b7d90.o: \
+  /Users/samgardner/Documents/snell/.theos/obj/debug/arm64e/Tweak.xm.mm \
   /Users/samgardner/theos/Prefix.pch \
   /Users/samgardner/theos/vendor/include/_Prefix/BackwardsCompat.h \
   /Users/samgardner/theos/vendor/include/_Prefix/IOSMacros.h \

@@ -1,6 +1,7 @@
 #line 1 "Tweak.xm"
 #import <Cephei/HBPreferences.h>
 #include <CSColorPicker/CSColorPicker.h>
+#include <RemoteLog.h>
 
 extern "C" CFArrayRef CPBitmapCreateImagesFromData(CFDataRef cpbitmap, void*, int, void*);
 
@@ -29,6 +30,7 @@ NSString *customBackgroundColor;
 BOOL shouldUseBorder;
 NSString *borderColor;
 double borderCornerRadius;
+double backdropCornerRadius;
 
 @interface _UIInterfaceActionGroupHeaderScrollView : UIView
 @end
@@ -40,6 +42,11 @@ double borderCornerRadius;
 @interface _UIAlertControllerActionView : UIView
 -(void)setBackgroundColor:(UIColor *)arg1;
 -(UIAlertAction *)action;
+-(UIAlertController *)alertController;
+@end
+
+@interface _UIInterfaceActionCustomViewRepresentationView : UIView
+-(_UIAlertControllerActionView *)_actionContentView;
 @end
 
 @interface _UIInterfaceActionVibrantSeparatorView : UIView
@@ -79,10 +86,10 @@ double borderCornerRadius;
 #define _LOGOS_RETURN_RETAINED
 #endif
 
-@class _UIDimmingKnockoutBackdropView; @class UIAlertController; @class SpringBoard; @class _UIAlertControllerActionView; @class _UIInterfaceActionVibrantSeparatorView; @class _UIInterfaceActionGroupHeaderScrollView; 
+@class _UIInterfaceActionGroupHeaderScrollView; @class _UIDimmingKnockoutBackdropView; @class _UIInterfaceActionVibrantSeparatorView; @class _UIAlertControllerActionView; @class UIAlertController; @class SpringBoard; 
 static void (*_logos_orig$_ungrouped$UIAlertController$viewWillAppear$)(_LOGOS_SELF_TYPE_NORMAL UIAlertController* _LOGOS_SELF_CONST, SEL, BOOL); static void _logos_method$_ungrouped$UIAlertController$viewWillAppear$(_LOGOS_SELF_TYPE_NORMAL UIAlertController* _LOGOS_SELF_CONST, SEL, BOOL); static void (*_logos_orig$_ungrouped$_UIDimmingKnockoutBackdropView$setBounds$)(_LOGOS_SELF_TYPE_NORMAL _UIDimmingKnockoutBackdropView* _LOGOS_SELF_CONST, SEL, CGRect); static void _logos_method$_ungrouped$_UIDimmingKnockoutBackdropView$setBounds$(_LOGOS_SELF_TYPE_NORMAL _UIDimmingKnockoutBackdropView* _LOGOS_SELF_CONST, SEL, CGRect); static void (*_logos_orig$_ungrouped$_UIInterfaceActionVibrantSeparatorView$_setupEffectView)(_LOGOS_SELF_TYPE_NORMAL _UIInterfaceActionVibrantSeparatorView* _LOGOS_SELF_CONST, SEL); static void _logos_method$_ungrouped$_UIInterfaceActionVibrantSeparatorView$_setupEffectView(_LOGOS_SELF_TYPE_NORMAL _UIInterfaceActionVibrantSeparatorView* _LOGOS_SELF_CONST, SEL); static void (*_logos_orig$_ungrouped$_UIAlertControllerActionView$_updateStyle)(_LOGOS_SELF_TYPE_NORMAL _UIAlertControllerActionView* _LOGOS_SELF_CONST, SEL); static void _logos_method$_ungrouped$_UIAlertControllerActionView$_updateStyle(_LOGOS_SELF_TYPE_NORMAL _UIAlertControllerActionView* _LOGOS_SELF_CONST, SEL); static void (*_logos_orig$_ungrouped$_UIAlertControllerActionView$setHighlighted$)(_LOGOS_SELF_TYPE_NORMAL _UIAlertControllerActionView* _LOGOS_SELF_CONST, SEL, BOOL); static void _logos_method$_ungrouped$_UIAlertControllerActionView$setHighlighted$(_LOGOS_SELF_TYPE_NORMAL _UIAlertControllerActionView* _LOGOS_SELF_CONST, SEL, BOOL); static id (*_logos_orig$_ungrouped$_UIInterfaceActionGroupHeaderScrollView$updateConstraints)(_LOGOS_SELF_TYPE_NORMAL _UIInterfaceActionGroupHeaderScrollView* _LOGOS_SELF_CONST, SEL); static id _logos_method$_ungrouped$_UIInterfaceActionGroupHeaderScrollView$updateConstraints(_LOGOS_SELF_TYPE_NORMAL _UIInterfaceActionGroupHeaderScrollView* _LOGOS_SELF_CONST, SEL); static void (*_logos_orig$_ungrouped$SpringBoard$applicationDidFinishLaunching$)(_LOGOS_SELF_TYPE_NORMAL SpringBoard* _LOGOS_SELF_CONST, SEL, id); static void _logos_method$_ungrouped$SpringBoard$applicationDidFinishLaunching$(_LOGOS_SELF_TYPE_NORMAL SpringBoard* _LOGOS_SELF_CONST, SEL, id); 
 
-#line 60 "Tweak.xm"
+#line 67 "Tweak.xm"
 
 
 static void _logos_method$_ungrouped$UIAlertController$viewWillAppear$(_LOGOS_SELF_TYPE_NORMAL UIAlertController* _LOGOS_SELF_CONST __unused self, SEL __unused _cmd, BOOL arg1){
@@ -152,6 +159,7 @@ static void _logos_method$_ungrouped$UIAlertController$viewWillAppear$(_LOGOS_SE
 
 
 static void _logos_method$_ungrouped$_UIDimmingKnockoutBackdropView$setBounds$(_LOGOS_SELF_TYPE_NORMAL _UIDimmingKnockoutBackdropView* _LOGOS_SELF_CONST __unused self, SEL __unused _cmd, CGRect arg1){
+    _logos_orig$_ungrouped$_UIDimmingKnockoutBackdropView$setBounds$(self, _cmd, arg1);
     if (enabled && hideStockBackdrop) {
         UIView *backdropView = MSHookIvar<UIView *>(self, "backdropView");
         [backdropView setHidden:TRUE];
@@ -162,7 +170,10 @@ static void _logos_method$_ungrouped$_UIDimmingKnockoutBackdropView$setBounds$(_
         [[[self superview] layer] setBorderWidth:1.0f];
         [[[self superview] layer] setCornerRadius:borderCornerRadius];
     }
-    _logos_orig$_ungrouped$_UIDimmingKnockoutBackdropView$setBounds$(self, _cmd, arg1);
+    if (enabled) {
+        [self setClipsToBounds:TRUE];
+        [[self layer] setCornerRadius:backdropCornerRadius];
+    }
 }
 
 
@@ -188,9 +199,21 @@ static void _logos_method$_ungrouped$_UIInterfaceActionVibrantSeparatorView$_set
 
 
 static void _logos_method$_ungrouped$_UIAlertControllerActionView$_updateStyle(_LOGOS_SELF_TYPE_NORMAL _UIAlertControllerActionView* _LOGOS_SELF_CONST __unused self, SEL __unused _cmd){
+    NSLog(@"SNELL TESTING UPDATESTYLE");
     if (enabled) {
         if (shouldChangeBottomHalfColor) {
             [self setBackgroundColor:[UIColor cscp_colorFromHexString:customBottomHalfColor]];
+        }
+        UIStackView *alertActionsView = (UIStackView *)[[self superview] superview];
+        if ([[alertActionsView arrangedSubviews] count] > 0) {
+            _UIInterfaceActionCustomViewRepresentationView *lastActionView = [[alertActionsView arrangedSubviews] lastObject];
+            if ([[[self action] title] isEqualToString:[[[lastActionView _actionContentView] action] title]]) {
+                [self setClipsToBounds:TRUE];
+                [[self layer] setCornerRadius:backdropCornerRadius];
+                if (@available(iOS 11, *)) {
+                    [[self layer] setMaskedCorners:kCALayerMinXMaxYCorner | kCALayerMaxXMaxYCorner];
+                }
+            }
         }
     }
     _logos_orig$_ungrouped$_UIAlertControllerActionView$_updateStyle(self, _cmd);
@@ -217,6 +240,11 @@ static void _logos_method$_ungrouped$_UIAlertControllerActionView$setHighlighted
 
 
 static id _logos_method$_ungrouped$_UIInterfaceActionGroupHeaderScrollView$updateConstraints(_LOGOS_SELF_TYPE_NORMAL _UIInterfaceActionGroupHeaderScrollView* _LOGOS_SELF_CONST __unused self, SEL __unused _cmd){
+    [self setClipsToBounds:TRUE];
+    [[self layer] setCornerRadius:backdropCornerRadius];
+    if (@available(iOS 11, *)) {
+        [[self layer] setMaskedCorners:kCALayerMinXMinYCorner | kCALayerMaxXMinYCorner];
+    }
     if (shouldChangeTopHalfColor && enabled) {
         [self setBackgroundColor:[UIColor cscp_colorFromHexString:customTopHalfColor]];
     }
@@ -264,7 +292,8 @@ static void _logos_method$_ungrouped$SpringBoard$applicationDidFinishLaunching$(
 
 
 
-static __attribute__((constructor)) void _logosLocalCtor_12236b3c(int __unused argc, char __unused **argv, char __unused **envp) {
+static __attribute__((constructor)) void _logosLocalCtor_0553463c(int __unused argc, char __unused **argv, char __unused **envp) {
+    NSLog(@"SNELL TESTING");
     if ([[[[NSProcessInfo processInfo] arguments] objectAtIndex:0] containsString:@"/Application"] || [[[[NSProcessInfo processInfo] arguments] objectAtIndex:0] containsString:@"SpringBoard.app"]) {
         HBPreferences *preferences = [[HBPreferences alloc] initWithIdentifier:@"com.samgisaninja.snellprefs"];
         [preferences registerBool:&enabled default:TRUE forKey:@"isEnabled"];
@@ -290,6 +319,7 @@ static __attribute__((constructor)) void _logosLocalCtor_12236b3c(int __unused a
         [preferences registerBool:&shouldUseBorder default:FALSE forKey:@"shouldUseBorder"];
         [preferences registerObject:&borderColor default:@"FF00000000" forKey:@"borderColor"];
         [preferences registerDouble:&borderCornerRadius default:10.0f forKey:@"borderCornerRadius"];
+        [preferences registerDouble:&backdropCornerRadius default:10.0f forKey:@"backdropCornerRadius"];
         {Class _logos_class$_ungrouped$UIAlertController = objc_getClass("UIAlertController"); MSHookMessageEx(_logos_class$_ungrouped$UIAlertController, @selector(viewWillAppear:), (IMP)&_logos_method$_ungrouped$UIAlertController$viewWillAppear$, (IMP*)&_logos_orig$_ungrouped$UIAlertController$viewWillAppear$);Class _logos_class$_ungrouped$_UIDimmingKnockoutBackdropView = objc_getClass("_UIDimmingKnockoutBackdropView"); MSHookMessageEx(_logos_class$_ungrouped$_UIDimmingKnockoutBackdropView, @selector(setBounds:), (IMP)&_logos_method$_ungrouped$_UIDimmingKnockoutBackdropView$setBounds$, (IMP*)&_logos_orig$_ungrouped$_UIDimmingKnockoutBackdropView$setBounds$);Class _logos_class$_ungrouped$_UIInterfaceActionVibrantSeparatorView = objc_getClass("_UIInterfaceActionVibrantSeparatorView"); MSHookMessageEx(_logos_class$_ungrouped$_UIInterfaceActionVibrantSeparatorView, @selector(_setupEffectView), (IMP)&_logos_method$_ungrouped$_UIInterfaceActionVibrantSeparatorView$_setupEffectView, (IMP*)&_logos_orig$_ungrouped$_UIInterfaceActionVibrantSeparatorView$_setupEffectView);Class _logos_class$_ungrouped$_UIAlertControllerActionView = objc_getClass("_UIAlertControllerActionView"); MSHookMessageEx(_logos_class$_ungrouped$_UIAlertControllerActionView, @selector(_updateStyle), (IMP)&_logos_method$_ungrouped$_UIAlertControllerActionView$_updateStyle, (IMP*)&_logos_orig$_ungrouped$_UIAlertControllerActionView$_updateStyle);MSHookMessageEx(_logos_class$_ungrouped$_UIAlertControllerActionView, @selector(setHighlighted:), (IMP)&_logos_method$_ungrouped$_UIAlertControllerActionView$setHighlighted$, (IMP*)&_logos_orig$_ungrouped$_UIAlertControllerActionView$setHighlighted$);Class _logos_class$_ungrouped$_UIInterfaceActionGroupHeaderScrollView = objc_getClass("_UIInterfaceActionGroupHeaderScrollView"); MSHookMessageEx(_logos_class$_ungrouped$_UIInterfaceActionGroupHeaderScrollView, @selector(updateConstraints), (IMP)&_logos_method$_ungrouped$_UIInterfaceActionGroupHeaderScrollView$updateConstraints, (IMP*)&_logos_orig$_ungrouped$_UIInterfaceActionGroupHeaderScrollView$updateConstraints);Class _logos_class$_ungrouped$SpringBoard = objc_getClass("SpringBoard"); MSHookMessageEx(_logos_class$_ungrouped$SpringBoard, @selector(applicationDidFinishLaunching:), (IMP)&_logos_method$_ungrouped$SpringBoard$applicationDidFinishLaunching$, (IMP*)&_logos_orig$_ungrouped$SpringBoard$applicationDidFinishLaunching$);}
     }
 }
