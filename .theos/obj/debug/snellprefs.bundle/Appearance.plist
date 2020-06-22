@@ -480,7 +480,7 @@
 			<key>key</key>
 			<string>hideCancelViewBackdrop</string>
 			<key>label</key>
-			<string>Disable highlighting of "cancel" action in actionsheets</string>
+			<string>Disable highlighting of "cancel" actionsheets</string>
 			<key>PostNotification</key>
 			<string>com.samgisaninja.snellprefs/ReloadPrefs</string>
 		</dict>

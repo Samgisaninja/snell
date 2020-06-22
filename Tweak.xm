@@ -1,10 +1,10 @@
 #import <Cephei/HBPreferences.h>
 #include <CSColorPicker/CSColorPicker.h>
-#include <RemoteLog.h>
 
 extern "C" CFArrayRef CPBitmapCreateImagesFromData(CFDataRef cpbitmap, void*, int, void*);
 
 BOOL enabled;
+NSInteger themeMode;
 NSString *useWallpaper;
 NSString *blurStyle;
 BOOL shouldChangeTitleColor;
@@ -69,13 +69,181 @@ BOOL useInHapticTouchMenus;
 @interface _UIAlertControlleriOSActionSheetCancelBackgroundView : UIView
 @end
 
+@interface UIAlertAction ()
+@property (nonatomic, copy) id handler;
+@end
+
+#pragma mark tvOS style
+
+@interface snellTvViewController : UIViewController
+@property (strong, nonatomic) UIAlertController *origAlertController;
+@end
+
+@implementation snellTvViewController
+
+-(void)viewDidLoad{
+	CGRect screenRect = [[UIScreen mainScreen] bounds];
+	UIVisualEffectView *blurView = [[UIVisualEffectView alloc] initWithEffect:[UIBlurEffect effectWithStyle:UIBlurEffectStyleRegular]];
+	[blurView setFrame:screenRect];
+	[[self view] addSubview:blurView];
+	UILabel *titleLabel = [[UILabel alloc] init];
+	[titleLabel setText:[[self origAlertController] title]];
+	[titleLabel setFont:[UIFont boldSystemFontOfSize:22]];
+	[titleLabel setNumberOfLines:0];
+	[titleLabel sizeToFit];
+	UILabel *messageLabel = [[UILabel alloc] init];
+	[messageLabel setText:[[self origAlertController] message]];
+	[messageLabel setFont:[UIFont systemFontOfSize:20]];
+	[messageLabel setNumberOfLines:0];
+	[messageLabel sizeToFit];
+	NSMutableArray *actionButtons = [[NSMutableArray alloc] init];
+	for (int a = 0; a < [[[self origAlertController] actions] count]; a++){
+		UIAlertAction *action = [[[self origAlertController] actions] objectAtIndex:a];
+		UIButton *customActionButton = [UIButton buttonWithType:UIButtonTypeCustom];
+		[customActionButton addTarget:self action:@selector(makeMeGlow:) forControlEvents:UIControlEventTouchDown];
+		[customActionButton addTarget:self action:@selector(makeMeGlow:) forControlEvents:UIControlEventTouchDragEnter];
+		[customActionButton addTarget:self action:@selector(unglow:) forControlEvents:UIControlEventTouchDragExit];
+		[customActionButton addTarget:self action:@selector(actionButtonTouchUpInside:) forControlEvents:UIControlEventTouchUpInside];
+		[customActionButton setTitle:[action title] forState:UIControlStateNormal];
+		[customActionButton sizeToFit];
+		[customActionButton setFrame:CGRectMake(customActionButton.frame.origin.x, customActionButton.frame.origin.y, (screenRect.size.width - 30), customActionButton.frame.size.height)];
+		[actionButtons addObject:customActionButton];
+	}
+	float totalHeight = titleLabel.frame.size.height + 10 + messageLabel.frame.size.height + ((int)[actionButtons count] * ([[actionButtons objectAtIndex:0] frame].size.height + 10));
+	float rollingHeight = (screenRect.size.height/2) - (totalHeight/2);
+	[titleLabel setFrame:CGRectMake(
+		(((screenRect.size.width)/2) - (titleLabel.frame.size.width/2)),
+		rollingHeight,
+		titleLabel.frame.size.width,
+		titleLabel.frame.size.height
+	)];
+	rollingHeight += titleLabel.frame.size.height;
+	rollingHeight += 10;
+	[[blurView contentView] addSubview:titleLabel];
+	[messageLabel setFrame:CGRectMake(
+		(((screenRect.size.width)/2) - (messageLabel.frame.size.width/2)),
+		rollingHeight,
+		messageLabel.frame.size.width,
+		messageLabel.frame.size.height
+	)];
+	rollingHeight += messageLabel.frame.size.height;
+	[[blurView contentView] addSubview:messageLabel];
+	rollingHeight += 10;
+	for (UIButton *customActionButton in actionButtons){
+		rollingHeight += 10;
+		UIView *buttonBackgroundView = [[UIView alloc] initWithFrame:CGRectMake(
+			(((screenRect.size.width)/2) - (customActionButton.frame.size.width/2)),
+			rollingHeight,
+			customActionButton.frame.size.width,
+			customActionButton.frame.size.height
+		)];
+		[customActionButton setFrame:CGRectMake(
+			0,
+			0,
+			customActionButton.frame.size.width,
+			customActionButton.frame.size.height
+		)];
+		rollingHeight += customActionButton.frame.size.height;
+		for (UIAlertAction *action in [[self origAlertController] actions]){
+			if ([[action title] isEqualToString:[customActionButton currentTitle]]){
+				if ([action style] == UIAlertActionStyleDefault){
+					[buttonBackgroundView setBackgroundColor:[UIColor cscp_colorFromHexString:@"55555555"]];
+				} else if ([action style] == UIAlertActionStyleCancel) {
+					[buttonBackgroundView setBackgroundColor:[UIColor cscp_colorFromHexString:@"55555555"]];
+				} else if ([action style] == UIAlertActionStyleDestructive) {
+					[buttonBackgroundView setBackgroundColor:[UIColor cscp_colorFromHexString:@"55FF0000"]];
+				}
+			}
+		}
+		
+		[buttonBackgroundView setClipsToBounds:TRUE];
+		[[buttonBackgroundView layer] setCornerRadius:10];
+		[[blurView contentView] addSubview:buttonBackgroundView];
+		[buttonBackgroundView addSubview:customActionButton];
+	}
+}
+
+-(void)makeMeGlow:(UIButton *)sender{
+	CGRect preGlowFrame =  [[sender superview] frame];
+	[UIView animateWithDuration:0.1 animations:^{
+		[sender setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+		[[sender superview] setBackgroundColor:[UIColor whiteColor]];
+		[sender setFrame:CGRectMake(
+			sender.frame.origin.x + 5,
+			sender.frame.origin.y + 5,
+			sender.frame.size.width,
+			sender.frame.size.height
+		)];
+		[[sender superview] setFrame:CGRectMake(
+			(preGlowFrame.origin.x - 5),
+			(preGlowFrame.origin.y - 5),
+			(preGlowFrame.size.width + 10),
+			(preGlowFrame.size.height + 10)
+		)];
+	}];
+}
+
+-(void)unglow:(UIButton *)sender{
+	CGRect postGlowFrame = [[sender superview] frame];
+	[UIView animateWithDuration:0.1 animations:^{
+		[sender setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+		[[sender superview] setBackgroundColor:[UIColor cscp_colorFromHexString:@"55555555"]];
+		[sender setFrame:CGRectMake(
+			sender.frame.origin.x - 5,
+			sender.frame.origin.y - 5,
+			sender.frame.size.width,
+			sender.frame.size.height
+		)];
+		[[sender superview] setFrame:CGRectMake(
+			(postGlowFrame.origin.x + 5),
+			(postGlowFrame.origin.y + 5),
+			(postGlowFrame.size.width - 10),
+			(postGlowFrame.size.height - 10)
+		)];
+	}];
+}
+
+-(void)actionButtonTouchUpInside:(UIButton *)sender{
+	for (UIAlertAction *action in [[self origAlertController] actions]){
+		if ([[action title] isEqualToString:[sender currentTitle]]){
+			if (action.handler) {
+				[self dismissViewControllerAnimated:TRUE completion:action.handler];
+			} else {
+				[self dismissViewControllerAnimated:TRUE completion:nil];
+			}
+		}
+	}
+}
+
+@end
+
+%hook UIViewController
+
+-(void)presentViewController:(id)arg1 animated:(BOOL)arg2 completion:(/*^block*/id)arg3{
+	if (enabled && themeMode == 1) {
+		if ([arg1 class] == [UIAlertController class]){
+			snellTvViewController *tvAlertController = [[snellTvViewController alloc] init];
+			[tvAlertController setModalPresentationStyle:UIModalPresentationOverFullScreen];
+			[tvAlertController setOrigAlertController:arg1];
+			[tvAlertController setModalTransitionStyle:UIModalTransitionStyleCrossDissolve];
+			%orig(tvAlertController, TRUE, arg3);
+		} else {
+			%orig;
+		}
+	} else {
+		%orig;
+	}
+}
+
+%end
+
 #pragma mark Appearance
 
 
 %hook UIAlertController
 
 -(void)viewWillAppear:(BOOL)arg1{
-    if (enabled) {
+    if (enabled && themeMode == 0) {
         UIVisualEffectView *snellEffectView;
         if ([blurStyle isEqualToString:@"ultraLightStyle"]) {
             snellEffectView = [[UIVisualEffectView alloc] initWithEffect:[UIBlurEffect effectWithStyle:UIBlurEffectStyleExtraLight]];
@@ -143,7 +311,7 @@ BOOL useInHapticTouchMenus;
 %hook _UIDimmingKnockoutBackdropView
 
 -(void)setBounds:(CGRect)arg1{
-    if (enabled) {
+    if (enabled && themeMode == 0) {
         if ([NSStringFromClass([[self _viewControllerForAncestor] class]) isEqualToString:@"UIAlertController"] || useInHapticTouchMenus) {
             if (hideStockBackdrop) {
                 UIView *backdropView = MSHookIvar<UIView *>(self, "backdropView");
@@ -167,7 +335,7 @@ BOOL useInHapticTouchMenus;
 %hook _UIInterfaceActionVibrantSeparatorView
 
 -(void)_setupEffectView{
-    if (enabled) {
+    if (enabled && themeMode == 0) {
         if ([separatorStyle isEqualToString:@"hideSeparators"]) {
             [self setHidden:TRUE];
         } else if ([separatorStyle isEqualToString:@"customSeparators"]) {
@@ -185,7 +353,7 @@ BOOL useInHapticTouchMenus;
 %hook _UIAlertControllerActionView
 
 -(void)_updateStyle{
-    if (enabled) {
+    if (enabled && themeMode == 0) {
         if (shouldChangeBottomHalfColor) {
             [self setBackgroundColor:[UIColor cscp_colorFromHexString:customBottomHalfColor]];
         }
@@ -194,7 +362,7 @@ BOOL useInHapticTouchMenus;
 }
 
 -(void)setHighlighted:(BOOL)arg1{
-    if (enabled) {
+    if (enabled && themeMode == 0) {
         if (arg1) {
             if (shouldChangeActionHighlightColor) {
                 highlightView = [[UIView alloc] initWithFrame:[self bounds]];
@@ -214,7 +382,7 @@ BOOL useInHapticTouchMenus;
 %hook _UIInterfaceActionGroupHeaderScrollView
 
 -(id)updateConstraints{
-    if (shouldChangeTopHalfColor && enabled) {
+    if (enabled && themeMode == 0 && shouldChangeTopHalfColor) {
         [self setBackgroundColor:[UIColor cscp_colorFromHexString:customTopHalfColor]];
     }
     return %orig;
@@ -265,7 +433,7 @@ BOOL useInHapticTouchMenus;
 
 
 -(void)setHighlighted:(BOOL)arg1{
-    if (enabled && hideCancelViewBackdrop) {
+    if (enabled && themeMode == 0 && hideCancelViewBackdrop) {
         [self setHidden:TRUE];
     }
     %orig;
@@ -278,6 +446,7 @@ BOOL useInHapticTouchMenus;
     if ([[[[NSProcessInfo processInfo] arguments] objectAtIndex:0] containsString:@"/Application"] || [[[[NSProcessInfo processInfo] arguments] objectAtIndex:0] containsString:@"SpringBoard.app"]) {
         HBPreferences *preferences = [[HBPreferences alloc] initWithIdentifier:@"com.samgisaninja.snellprefs"];
         [preferences registerBool:&enabled default:TRUE forKey:@"isEnabled"];
+		[preferences registerInteger:&themeMode default:0 forKey:@"themeMode"];
         [preferences registerObject:&useWallpaper default:@"homescreenBackground" forKey:@"useWallpaper"];
         [preferences registerObject:&blurStyle default:@"unblurredStyle" forKey:@"blurStyle"];
         [preferences registerBool:&shouldChangeTitleColor default:FALSE forKey:@"shouldChangeTitleColor"];
