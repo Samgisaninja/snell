@@ -73,6 +73,111 @@ BOOL useInHapticTouchMenus;
 @property (nonatomic, copy) id handler;
 @end
 
+#pragma mark AirPods style
+
+@interface snellAirpodsViewController : UIViewController
+@property (strong, nonatomic) UIAlertController *origAlertController;
+@end
+
+@implementation snellAirpodsViewController
+
+-(void)viewDidLoad{
+	CGRect screenRect = [[UIScreen mainScreen] bounds];
+	UIView *backgroundView = [[UIView alloc] initWithFrame:CGRectMake(
+		5,
+		(screenRect.size.height - 325),
+		(screenRect.size.width - 10),
+		320
+	)];
+	[backgroundView setClipsToBounds:TRUE];
+	[[backgroundView layer] setCornerRadius:30];
+	[backgroundView setBackgroundColor:[UIColor cscp_colorFromHexString:@"FFFFFFFF"]];
+	[[self view] addSubview:backgroundView];
+	UILabel *titleLabel = [[UILabel alloc] init];
+	[titleLabel setText:[[self origAlertController] title]];
+	[titleLabel setFont:[UIFont boldSystemFontOfSize:22]];
+	[titleLabel setNumberOfLines:0];
+	[titleLabel setLineBreakMode:NSLineBreakByWordWrapping];
+	[titleLabel sizeToFit];
+	[titleLabel setTextColor:[UIColor cscp_colorFromHexString:@"FF000000"]];
+	float rollingHeight = (screenRect.size.height - 295);
+	[titleLabel setFrame:CGRectMake(
+		20,
+		rollingHeight,
+		(screenRect.size.width - 40),
+		titleLabel.frame.size.height
+	)];
+	[[self view] addSubview:titleLabel];
+	rollingHeight += titleLabel.frame.size.height;
+	rollingHeight += 10;
+	UILabel *messageLabel = [[UILabel alloc] init];
+	[messageLabel setText:[[self origAlertController] message]];
+	[messageLabel setFont:[UIFont systemFontOfSize:20]];
+	[messageLabel setNumberOfLines:0];
+	[messageLabel setLineBreakMode:NSLineBreakByWordWrapping];
+	[messageLabel sizeToFit];
+	[messageLabel setTextColor:[UIColor cscp_colorFromHexString:@"FF000000"]];
+	[messageLabel setFrame:CGRectMake(
+		20,
+		rollingHeight,
+		(screenRect.size.width - 40),
+		messageLabel.frame.size.height
+	)];
+	[[self view] addSubview:messageLabel];
+	if ((int)[[[self origAlertController] actions] count] % 2) {
+		rollingHeight = screenRect.size.height - 5;
+		for (int a = ((int)[[[self origAlertController] actions] count] - 1); a >= 0; a--){
+			rollingHeight -= 10;
+			UIAlertAction *action = [[[self origAlertController] actions] objectAtIndex:a];
+			UIButton *customActionButton = [UIButton buttonWithType:UIButtonTypeCustom];
+			[customActionButton addTarget:self action:@selector(actionButtonTouchUpInside:) forControlEvents:UIControlEventTouchUpInside];
+			[customActionButton setTitle:[action title] forState:UIControlStateNormal];
+			rollingHeight -= 50;
+			[customActionButton setFrame:CGRectMake(20, rollingHeight, (screenRect.size.width - 40), 50)];
+			[customActionButton setClipsToBounds:TRUE];
+			[[customActionButton layer] setCornerRadius:10];
+			[customActionButton setBackgroundColor:[UIColor cscp_colorFromHexString:@"FFD1CEDC"]];
+			[customActionButton setTitleColor:[UIColor cscp_colorFromHexString:@"FF000000"] forState:UIControlStateNormal];
+			[[self view] addSubview:customActionButton];
+		}
+	} else {
+		rollingHeight = screenRect.size.height - 5;
+		for (int a = ((int)[[[self origAlertController] actions] count] - 1); a >= 0; a--){
+			float rollingX;
+			if (a % 2){
+				rollingHeight -= 60;
+				rollingX = ((screenRect.size.width)/2) + 10;
+			} else {
+				rollingX = 10;
+			}
+			UIAlertAction *action = [[[self origAlertController] actions] objectAtIndex:a];
+			UIButton *customActionButton = [UIButton buttonWithType:UIButtonTypeCustom];
+			[customActionButton addTarget:self action:@selector(actionButtonTouchUpInside:) forControlEvents:UIControlEventTouchUpInside];
+			[customActionButton setTitle:[action title] forState:UIControlStateNormal];
+			[customActionButton setFrame:CGRectMake(rollingX, rollingHeight, (screenRect.size.width/2 - 20), 50)];
+			[customActionButton setClipsToBounds:TRUE];
+			[[customActionButton layer] setCornerRadius:10];
+			[customActionButton setBackgroundColor:[UIColor cscp_colorFromHexString:@"FFD1CEDC"]];
+			[customActionButton setTitleColor:[UIColor cscp_colorFromHexString:@"FF000000"] forState:UIControlStateNormal];
+			[[self view] addSubview:customActionButton];
+		}
+	}
+}
+
+-(void)actionButtonTouchUpInside:(UIButton *)sender{
+	for (UIAlertAction *action in [[self origAlertController] actions]){
+		if ([[action title] isEqualToString:[sender currentTitle]]){
+			if (action.handler) {
+				[self dismissViewControllerAnimated:TRUE completion:action.handler];
+			} else {
+				[self dismissViewControllerAnimated:TRUE completion:nil];
+			}
+		}
+	}
+}
+
+@end
+
 #pragma mark tvOS style
 
 @interface snellTvViewController : UIViewController
@@ -90,11 +195,13 @@ BOOL useInHapticTouchMenus;
 	[titleLabel setText:[[self origAlertController] title]];
 	[titleLabel setFont:[UIFont boldSystemFontOfSize:22]];
 	[titleLabel setNumberOfLines:0];
+	[titleLabel setLineBreakMode:NSLineBreakByWordWrapping];
 	[titleLabel sizeToFit];
 	UILabel *messageLabel = [[UILabel alloc] init];
 	[messageLabel setText:[[self origAlertController] message]];
 	[messageLabel setFont:[UIFont systemFontOfSize:20]];
 	[messageLabel setNumberOfLines:0];
+	[messageLabel setLineBreakMode:NSLineBreakByWordWrapping];
 	[messageLabel sizeToFit];
 	NSMutableArray *actionButtons = [[NSMutableArray alloc] init];
 	for (int a = 0; a < [[[self origAlertController] actions] count]; a++){
@@ -220,13 +327,22 @@ BOOL useInHapticTouchMenus;
 %hook UIViewController
 
 -(void)presentViewController:(id)arg1 animated:(BOOL)arg2 completion:(/*^block*/id)arg3{
-	if (enabled && themeMode == 1) {
+	if (enabled) {
 		if ([arg1 class] == [UIAlertController class]){
-			snellTvViewController *tvAlertController = [[snellTvViewController alloc] init];
-			[tvAlertController setModalPresentationStyle:UIModalPresentationOverFullScreen];
-			[tvAlertController setOrigAlertController:arg1];
-			[tvAlertController setModalTransitionStyle:UIModalTransitionStyleCrossDissolve];
-			%orig(tvAlertController, TRUE, arg3);
+			if (themeMode == 1) {
+				snellTvViewController *tvAlertController = [[snellTvViewController alloc] init];
+				[tvAlertController setModalPresentationStyle:UIModalPresentationOverFullScreen];
+				[tvAlertController setOrigAlertController:arg1];
+				[tvAlertController setModalTransitionStyle:UIModalTransitionStyleCrossDissolve];
+				%orig(tvAlertController, TRUE, arg3);
+			} else if (themeMode == 2){
+				snellAirpodsViewController *connectAlertController = [[snellAirpodsViewController alloc] init];
+				[connectAlertController setModalPresentationStyle:UIModalPresentationOverFullScreen];
+				[connectAlertController setOrigAlertController:arg1];
+				%orig(connectAlertController, TRUE, arg3);
+			} else {
+				%orig;
+			}			
 		} else {
 			%orig;
 		}

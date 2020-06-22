@@ -74,6 +74,111 @@ BOOL useInHapticTouchMenus;
 @property (nonatomic, copy) id handler;
 @end
 
+#pragma mark AirPods style
+
+@interface snellAirpodsViewController : UIViewController
+@property (strong, nonatomic) UIAlertController *origAlertController;
+@end
+
+@implementation snellAirpodsViewController
+
+-(void)viewDidLoad{
+	CGRect screenRect = [[UIScreen mainScreen] bounds];
+	UIView *backgroundView = [[UIView alloc] initWithFrame:CGRectMake(
+		5,
+		(screenRect.size.height - 325),
+		(screenRect.size.width - 10),
+		320
+	)];
+	[backgroundView setClipsToBounds:TRUE];
+	[[backgroundView layer] setCornerRadius:30];
+	[backgroundView setBackgroundColor:[UIColor cscp_colorFromHexString:@"FFFFFFFF"]];
+	[[self view] addSubview:backgroundView];
+	UILabel *titleLabel = [[UILabel alloc] init];
+	[titleLabel setText:[[self origAlertController] title]];
+	[titleLabel setFont:[UIFont boldSystemFontOfSize:22]];
+	[titleLabel setNumberOfLines:0];
+	[titleLabel setLineBreakMode:NSLineBreakByWordWrapping];
+	[titleLabel sizeToFit];
+	[titleLabel setTextColor:[UIColor cscp_colorFromHexString:@"FF000000"]];
+	float rollingHeight = (screenRect.size.height - 295);
+	[titleLabel setFrame:CGRectMake(
+		20,
+		rollingHeight,
+		(screenRect.size.width - 40),
+		titleLabel.frame.size.height
+	)];
+	[[self view] addSubview:titleLabel];
+	rollingHeight += titleLabel.frame.size.height;
+	rollingHeight += 10;
+	UILabel *messageLabel = [[UILabel alloc] init];
+	[messageLabel setText:[[self origAlertController] message]];
+	[messageLabel setFont:[UIFont systemFontOfSize:20]];
+	[messageLabel setNumberOfLines:0];
+	[messageLabel setLineBreakMode:NSLineBreakByWordWrapping];
+	[messageLabel sizeToFit];
+	[messageLabel setTextColor:[UIColor cscp_colorFromHexString:@"FF000000"]];
+	[messageLabel setFrame:CGRectMake(
+		20,
+		rollingHeight,
+		(screenRect.size.width - 40),
+		messageLabel.frame.size.height
+	)];
+	[[self view] addSubview:messageLabel];
+	if ((int)[[[self origAlertController] actions] count] % 2) {
+		rollingHeight = screenRect.size.height - 5;
+		for (int a = ((int)[[[self origAlertController] actions] count] - 1); a >= 0; a--){
+			rollingHeight -= 10;
+			UIAlertAction *action = [[[self origAlertController] actions] objectAtIndex:a];
+			UIButton *customActionButton = [UIButton buttonWithType:UIButtonTypeCustom];
+			[customActionButton addTarget:self action:@selector(actionButtonTouchUpInside:) forControlEvents:UIControlEventTouchUpInside];
+			[customActionButton setTitle:[action title] forState:UIControlStateNormal];
+			rollingHeight -= 50;
+			[customActionButton setFrame:CGRectMake(20, rollingHeight, (screenRect.size.width - 40), 50)];
+			[customActionButton setClipsToBounds:TRUE];
+			[[customActionButton layer] setCornerRadius:10];
+			[customActionButton setBackgroundColor:[UIColor cscp_colorFromHexString:@"FFD1CEDC"]];
+			[customActionButton setTitleColor:[UIColor cscp_colorFromHexString:@"FF000000"] forState:UIControlStateNormal];
+			[[self view] addSubview:customActionButton];
+		}
+	} else {
+		rollingHeight = screenRect.size.height - 5;
+		for (int a = ((int)[[[self origAlertController] actions] count] - 1); a >= 0; a--){
+			float rollingX;
+			if (a % 2){
+				rollingHeight -= 60;
+				rollingX = ((screenRect.size.width)/2) + 10;
+			} else {
+				rollingX = 10;
+			}
+			UIAlertAction *action = [[[self origAlertController] actions] objectAtIndex:a];
+			UIButton *customActionButton = [UIButton buttonWithType:UIButtonTypeCustom];
+			[customActionButton addTarget:self action:@selector(actionButtonTouchUpInside:) forControlEvents:UIControlEventTouchUpInside];
+			[customActionButton setTitle:[action title] forState:UIControlStateNormal];
+			[customActionButton setFrame:CGRectMake(rollingX, rollingHeight, (screenRect.size.width/2 - 20), 50)];
+			[customActionButton setClipsToBounds:TRUE];
+			[[customActionButton layer] setCornerRadius:10];
+			[customActionButton setBackgroundColor:[UIColor cscp_colorFromHexString:@"FFD1CEDC"]];
+			[customActionButton setTitleColor:[UIColor cscp_colorFromHexString:@"FF000000"] forState:UIControlStateNormal];
+			[[self view] addSubview:customActionButton];
+		}
+	}
+}
+
+-(void)actionButtonTouchUpInside:(UIButton *)sender{
+	for (UIAlertAction *action in [[self origAlertController] actions]){
+		if ([[action title] isEqualToString:[sender currentTitle]]){
+			if (action.handler) {
+				[self dismissViewControllerAnimated:TRUE completion:action.handler];
+			} else {
+				[self dismissViewControllerAnimated:TRUE completion:nil];
+			}
+		}
+	}
+}
+
+@end
+
 #pragma mark tvOS style
 
 @interface snellTvViewController : UIViewController
@@ -91,11 +196,13 @@ BOOL useInHapticTouchMenus;
 	[titleLabel setText:[[self origAlertController] title]];
 	[titleLabel setFont:[UIFont boldSystemFontOfSize:22]];
 	[titleLabel setNumberOfLines:0];
+	[titleLabel setLineBreakMode:NSLineBreakByWordWrapping];
 	[titleLabel sizeToFit];
 	UILabel *messageLabel = [[UILabel alloc] init];
 	[messageLabel setText:[[self origAlertController] message]];
 	[messageLabel setFont:[UIFont systemFontOfSize:20]];
 	[messageLabel setNumberOfLines:0];
+	[messageLabel setLineBreakMode:NSLineBreakByWordWrapping];
 	[messageLabel sizeToFit];
 	NSMutableArray *actionButtons = [[NSMutableArray alloc] init];
 	for (int a = 0; a < [[[self origAlertController] actions] count]; a++){
@@ -239,20 +346,29 @@ BOOL useInHapticTouchMenus;
 #define _LOGOS_RETURN_RETAINED
 #endif
 
-@class UIViewController; @class UIAlertController; @class _UIAlertControllerActionView; @class _UIAlertControlleriOSActionSheetCancelBackgroundView; @class _UIInterfaceActionVibrantSeparatorView; @class _UIDimmingKnockoutBackdropView; @class SpringBoard; @class _UIInterfaceActionGroupHeaderScrollView; 
+@class UIAlertController; @class _UIInterfaceActionVibrantSeparatorView; @class _UIDimmingKnockoutBackdropView; @class _UIAlertControlleriOSActionSheetCancelBackgroundView; @class _UIAlertControllerActionView; @class UIViewController; @class _UIInterfaceActionGroupHeaderScrollView; @class SpringBoard; 
 static void (*_logos_orig$_ungrouped$UIViewController$presentViewController$animated$completion$)(_LOGOS_SELF_TYPE_NORMAL UIViewController* _LOGOS_SELF_CONST, SEL, id, BOOL, id); static void _logos_method$_ungrouped$UIViewController$presentViewController$animated$completion$(_LOGOS_SELF_TYPE_NORMAL UIViewController* _LOGOS_SELF_CONST, SEL, id, BOOL, id); static void (*_logos_orig$_ungrouped$UIAlertController$viewWillAppear$)(_LOGOS_SELF_TYPE_NORMAL UIAlertController* _LOGOS_SELF_CONST, SEL, BOOL); static void _logos_method$_ungrouped$UIAlertController$viewWillAppear$(_LOGOS_SELF_TYPE_NORMAL UIAlertController* _LOGOS_SELF_CONST, SEL, BOOL); static void (*_logos_orig$_ungrouped$_UIDimmingKnockoutBackdropView$setBounds$)(_LOGOS_SELF_TYPE_NORMAL _UIDimmingKnockoutBackdropView* _LOGOS_SELF_CONST, SEL, CGRect); static void _logos_method$_ungrouped$_UIDimmingKnockoutBackdropView$setBounds$(_LOGOS_SELF_TYPE_NORMAL _UIDimmingKnockoutBackdropView* _LOGOS_SELF_CONST, SEL, CGRect); static void (*_logos_orig$_ungrouped$_UIInterfaceActionVibrantSeparatorView$_setupEffectView)(_LOGOS_SELF_TYPE_NORMAL _UIInterfaceActionVibrantSeparatorView* _LOGOS_SELF_CONST, SEL); static void _logos_method$_ungrouped$_UIInterfaceActionVibrantSeparatorView$_setupEffectView(_LOGOS_SELF_TYPE_NORMAL _UIInterfaceActionVibrantSeparatorView* _LOGOS_SELF_CONST, SEL); static void (*_logos_orig$_ungrouped$_UIAlertControllerActionView$_updateStyle)(_LOGOS_SELF_TYPE_NORMAL _UIAlertControllerActionView* _LOGOS_SELF_CONST, SEL); static void _logos_method$_ungrouped$_UIAlertControllerActionView$_updateStyle(_LOGOS_SELF_TYPE_NORMAL _UIAlertControllerActionView* _LOGOS_SELF_CONST, SEL); static void (*_logos_orig$_ungrouped$_UIAlertControllerActionView$setHighlighted$)(_LOGOS_SELF_TYPE_NORMAL _UIAlertControllerActionView* _LOGOS_SELF_CONST, SEL, BOOL); static void _logos_method$_ungrouped$_UIAlertControllerActionView$setHighlighted$(_LOGOS_SELF_TYPE_NORMAL _UIAlertControllerActionView* _LOGOS_SELF_CONST, SEL, BOOL); static id (*_logos_orig$_ungrouped$_UIInterfaceActionGroupHeaderScrollView$updateConstraints)(_LOGOS_SELF_TYPE_NORMAL _UIInterfaceActionGroupHeaderScrollView* _LOGOS_SELF_CONST, SEL); static id _logos_method$_ungrouped$_UIInterfaceActionGroupHeaderScrollView$updateConstraints(_LOGOS_SELF_TYPE_NORMAL _UIInterfaceActionGroupHeaderScrollView* _LOGOS_SELF_CONST, SEL); static void (*_logos_orig$_ungrouped$SpringBoard$applicationDidFinishLaunching$)(_LOGOS_SELF_TYPE_NORMAL SpringBoard* _LOGOS_SELF_CONST, SEL, id); static void _logos_method$_ungrouped$SpringBoard$applicationDidFinishLaunching$(_LOGOS_SELF_TYPE_NORMAL SpringBoard* _LOGOS_SELF_CONST, SEL, id); static void (*_logos_orig$_ungrouped$_UIAlertControlleriOSActionSheetCancelBackgroundView$setHighlighted$)(_LOGOS_SELF_TYPE_NORMAL _UIAlertControlleriOSActionSheetCancelBackgroundView* _LOGOS_SELF_CONST, SEL, BOOL); static void _logos_method$_ungrouped$_UIAlertControlleriOSActionSheetCancelBackgroundView$setHighlighted$(_LOGOS_SELF_TYPE_NORMAL _UIAlertControlleriOSActionSheetCancelBackgroundView* _LOGOS_SELF_CONST, SEL, BOOL); 
 
-#line 220 "Tweak.xm"
+#line 327 "Tweak.xm"
 
 
 static void _logos_method$_ungrouped$UIViewController$presentViewController$animated$completion$(_LOGOS_SELF_TYPE_NORMAL UIViewController* _LOGOS_SELF_CONST __unused self, SEL __unused _cmd, id arg1, BOOL arg2, id arg3){
-	if (enabled && themeMode == 1) {
+	if (enabled) {
 		if ([arg1 class] == [UIAlertController class]){
-			snellTvViewController *tvAlertController = [[snellTvViewController alloc] init];
-			[tvAlertController setModalPresentationStyle:UIModalPresentationOverFullScreen];
-			[tvAlertController setOrigAlertController:arg1];
-			[tvAlertController setModalTransitionStyle:UIModalTransitionStyleCrossDissolve];
-			_logos_orig$_ungrouped$UIViewController$presentViewController$animated$completion$(self, _cmd, tvAlertController, TRUE, arg3);
+			if (themeMode == 1) {
+				snellTvViewController *tvAlertController = [[snellTvViewController alloc] init];
+				[tvAlertController setModalPresentationStyle:UIModalPresentationOverFullScreen];
+				[tvAlertController setOrigAlertController:arg1];
+				[tvAlertController setModalTransitionStyle:UIModalTransitionStyleCrossDissolve];
+				_logos_orig$_ungrouped$UIViewController$presentViewController$animated$completion$(self, _cmd, tvAlertController, TRUE, arg3);
+			} else if (themeMode == 2){
+				snellAirpodsViewController *connectAlertController = [[snellAirpodsViewController alloc] init];
+				[connectAlertController setModalPresentationStyle:UIModalPresentationOverFullScreen];
+				[connectAlertController setOrigAlertController:arg1];
+				_logos_orig$_ungrouped$UIViewController$presentViewController$animated$completion$(self, _cmd, connectAlertController, TRUE, arg3);
+			} else {
+				_logos_orig$_ungrouped$UIViewController$presentViewController$animated$completion$(self, _cmd, arg1, arg2, arg3);
+			}			
 		} else {
 			_logos_orig$_ungrouped$UIViewController$presentViewController$animated$completion$(self, _cmd, arg1, arg2, arg3);
 		}
@@ -468,7 +584,7 @@ static void _logos_method$_ungrouped$_UIAlertControlleriOSActionSheetCancelBackg
 
 
 
-static __attribute__((constructor)) void _logosLocalCtor_01d48f60(int __unused argc, char __unused **argv, char __unused **envp) {
+static __attribute__((constructor)) void _logosLocalCtor_a30047b3(int __unused argc, char __unused **argv, char __unused **envp) {
     if ([[[[NSProcessInfo processInfo] arguments] objectAtIndex:0] containsString:@"/Application"] || [[[[NSProcessInfo processInfo] arguments] objectAtIndex:0] containsString:@"SpringBoard.app"]) {
         HBPreferences *preferences = [[HBPreferences alloc] initWithIdentifier:@"com.samgisaninja.snellprefs"];
         [preferences registerBool:&enabled default:TRUE forKey:@"isEnabled"];
