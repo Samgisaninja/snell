@@ -32,6 +32,7 @@ double borderCornerRadius;
 double backdropCornerRadius;
 BOOL hideCancelViewBackdrop;
 BOOL useInHapticTouchMenus;
+BOOL allowPresentHook;
 
 @interface _UIInterfaceActionGroupHeaderScrollView : UIView
 @end
@@ -39,6 +40,7 @@ BOOL useInHapticTouchMenus;
 @interface UIAlertController ()
 @property (readonly) UIView *_dimmingView;
 @property UIView *_foregroundView;
+-(void)_dismissWithAction:(UIAlertAction *)arg1;
 @end
 
 @interface _UIAlertControllerActionView : UIView
@@ -190,7 +192,14 @@ BOOL useInHapticTouchMenus;
 	for (UIAlertAction *action in [[self origAlertController] actions]){
 		if ([[action title] isEqualToString:[sender currentTitle]]){
 			if (action.handler) {
-				[self dismissViewControllerAnimated:TRUE completion:action.handler];
+				UIViewController *presentingViewController = [self presentingViewController];
+				[self dismissViewControllerAnimated:TRUE completion:^{
+					allowPresentHook = FALSE;
+					[[[self origAlertController] view] setHidden:TRUE];
+					[presentingViewController presentViewController:[self origAlertController] animated:FALSE completion:nil];
+					allowPresentHook = TRUE;
+					[[self origAlertController] _dismissWithAction:action];
+				}];
 			} else {
 				[self dismissViewControllerAnimated:TRUE completion:nil];
 			}
@@ -336,7 +345,14 @@ BOOL useInHapticTouchMenus;
 	for (UIAlertAction *action in [[self origAlertController] actions]){
 		if ([[action title] isEqualToString:[sender currentTitle]]){
 			if (action.handler) {
-				[self dismissViewControllerAnimated:TRUE completion:action.handler];
+				UIViewController *presentingViewController = [self presentingViewController];
+				[self dismissViewControllerAnimated:TRUE completion:^{
+					allowPresentHook = FALSE;
+					[[[self origAlertController] view] setHidden:TRUE];
+					[presentingViewController presentViewController:[self origAlertController] animated:FALSE completion:nil];
+					allowPresentHook = TRUE;
+					[[self origAlertController] _dismissWithAction:action];
+				}];
 			} else {
 				[self dismissViewControllerAnimated:TRUE completion:nil];
 			}
@@ -349,7 +365,7 @@ BOOL useInHapticTouchMenus;
 %hook UIViewController
 
 -(void)presentViewController:(id)arg1 animated:(BOOL)arg2 completion:(/*^block*/id)arg3{
-	if (enabled) {
+	if (enabled && allowPresentHook) {
 		if ([arg1 class] == [UIAlertController class]){
 			if (themeMode == 1) {
 				snellTvViewController *tvAlertController = [[snellTvViewController alloc] init];
@@ -562,6 +578,7 @@ BOOL useInHapticTouchMenus;
     UIImage *darkSbWallpaper = [UIImage imageWithCGImage:(CGImageRef)darkSbImageArray[0]];
     NSData *darkHomeWallDataWrite = UIImageJPEGRepresentation(darkSbWallpaper, 1.0);
     [darkHomeWallDataWrite writeToFile:@"/var/mobile/Documents/snell/Home-dark.jpg" atomically:TRUE];
+	allowPresentHook = TRUE;
     %orig;
 }
 
@@ -610,6 +627,7 @@ BOOL useInHapticTouchMenus;
         [preferences registerDouble:&backdropCornerRadius default:10.0f forKey:@"backdropCornerRadius"];
         [preferences registerBool:&hideCancelViewBackdrop default:TRUE forKey:@"hideCancelViewBackdrop"];
         [preferences registerBool:&useInHapticTouchMenus default:TRUE forKey:@"useInHapticTouchMenus"];
+		allowPresentHook = TRUE;
         %init;
     }
 }

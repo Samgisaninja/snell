@@ -8,7 +8,6 @@
   /Users/samgardner/theos/vendor/include/CSColorPicker/CSColorPicker.h \
   /Users/samgardner/theos/vendor/include/CSColorPicker/UIColor+CSColorPicker.h \
   /Users/samgardner/theos/vendor/include/CSColorPicker/NSString+CSColorPicker.h \
-  /Users/samgardner/theos/include/RemoteLog.h \
   /Users/samgardner/theos/vendor/include/substrate.h
 
 /Users/samgardner/theos/Prefix.pch:
@@ -26,7 +25,5 @@
 /Users/samgardner/theos/vendor/include/CSColorPicker/UIColor+CSColorPicker.h:
 
 /Users/samgardner/theos/vendor/include/CSColorPicker/NSString+CSColorPicker.h:
-
-/Users/samgardner/theos/include/RemoteLog.h:
 
 /Users/samgardner/theos/vendor/include/substrate.h:
