@@ -115,14 +115,14 @@ BOOL useInHapticTouchMenus;
 	[messageLabel setFont:[UIFont systemFontOfSize:20]];
 	[messageLabel setNumberOfLines:0];
 	[messageLabel setLineBreakMode:NSLineBreakByWordWrapping];
-	[messageLabel sizeToFit];
 	[messageLabel setTextColor:[UIColor cscp_colorFromHexString:@"FF000000"]];
 	[messageLabel setFrame:CGRectMake(
 		20,
 		rollingHeight,
 		(screenRect.size.width - 40),
-		messageLabel.frame.size.height
+		9999
 	)];
+	[messageLabel sizeToFit];
 	float buttonHeightLimit = rollingHeight + messageLabel.frame.size.height + 10;
 	[[self view] addSubview:messageLabel];
 	if ((int)[[[self origAlertController] actions] count] % 2) {

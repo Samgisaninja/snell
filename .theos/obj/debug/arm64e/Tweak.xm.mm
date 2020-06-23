@@ -116,14 +116,14 @@ BOOL useInHapticTouchMenus;
 	[messageLabel setFont:[UIFont systemFontOfSize:20]];
 	[messageLabel setNumberOfLines:0];
 	[messageLabel setLineBreakMode:NSLineBreakByWordWrapping];
-	[messageLabel sizeToFit];
 	[messageLabel setTextColor:[UIColor cscp_colorFromHexString:@"FF000000"]];
 	[messageLabel setFrame:CGRectMake(
 		20,
 		rollingHeight,
 		(screenRect.size.width - 40),
-		messageLabel.frame.size.height
+		9999
 	)];
+	[messageLabel sizeToFit];
 	float buttonHeightLimit = rollingHeight + messageLabel.frame.size.height + 10;
 	[[self view] addSubview:messageLabel];
 	if ((int)[[[self origAlertController] actions] count] % 2) {
@@ -368,7 +368,7 @@ BOOL useInHapticTouchMenus;
 #define _LOGOS_RETURN_RETAINED
 #endif
 
-@class UIViewController; @class SpringBoard; @class UIAlertController; @class _UIDimmingKnockoutBackdropView; @class _UIAlertControlleriOSActionSheetCancelBackgroundView; @class _UIInterfaceActionGroupHeaderScrollView; @class _UIInterfaceActionVibrantSeparatorView; @class _UIAlertControllerActionView; 
+@class _UIAlertControllerActionView; @class _UIInterfaceActionVibrantSeparatorView; @class UIAlertController; @class SpringBoard; @class _UIAlertControlleriOSActionSheetCancelBackgroundView; @class _UIInterfaceActionGroupHeaderScrollView; @class _UIDimmingKnockoutBackdropView; @class UIViewController; 
 static void (*_logos_orig$_ungrouped$UIViewController$presentViewController$animated$completion$)(_LOGOS_SELF_TYPE_NORMAL UIViewController* _LOGOS_SELF_CONST, SEL, id, BOOL, id); static void _logos_method$_ungrouped$UIViewController$presentViewController$animated$completion$(_LOGOS_SELF_TYPE_NORMAL UIViewController* _LOGOS_SELF_CONST, SEL, id, BOOL, id); static void (*_logos_orig$_ungrouped$UIAlertController$viewWillAppear$)(_LOGOS_SELF_TYPE_NORMAL UIAlertController* _LOGOS_SELF_CONST, SEL, BOOL); static void _logos_method$_ungrouped$UIAlertController$viewWillAppear$(_LOGOS_SELF_TYPE_NORMAL UIAlertController* _LOGOS_SELF_CONST, SEL, BOOL); static void (*_logos_orig$_ungrouped$_UIDimmingKnockoutBackdropView$setBounds$)(_LOGOS_SELF_TYPE_NORMAL _UIDimmingKnockoutBackdropView* _LOGOS_SELF_CONST, SEL, CGRect); static void _logos_method$_ungrouped$_UIDimmingKnockoutBackdropView$setBounds$(_LOGOS_SELF_TYPE_NORMAL _UIDimmingKnockoutBackdropView* _LOGOS_SELF_CONST, SEL, CGRect); static void (*_logos_orig$_ungrouped$_UIInterfaceActionVibrantSeparatorView$_setupEffectView)(_LOGOS_SELF_TYPE_NORMAL _UIInterfaceActionVibrantSeparatorView* _LOGOS_SELF_CONST, SEL); static void _logos_method$_ungrouped$_UIInterfaceActionVibrantSeparatorView$_setupEffectView(_LOGOS_SELF_TYPE_NORMAL _UIInterfaceActionVibrantSeparatorView* _LOGOS_SELF_CONST, SEL); static void (*_logos_orig$_ungrouped$_UIAlertControllerActionView$_updateStyle)(_LOGOS_SELF_TYPE_NORMAL _UIAlertControllerActionView* _LOGOS_SELF_CONST, SEL); static void _logos_method$_ungrouped$_UIAlertControllerActionView$_updateStyle(_LOGOS_SELF_TYPE_NORMAL _UIAlertControllerActionView* _LOGOS_SELF_CONST, SEL); static void (*_logos_orig$_ungrouped$_UIAlertControllerActionView$setHighlighted$)(_LOGOS_SELF_TYPE_NORMAL _UIAlertControllerActionView* _LOGOS_SELF_CONST, SEL, BOOL); static void _logos_method$_ungrouped$_UIAlertControllerActionView$setHighlighted$(_LOGOS_SELF_TYPE_NORMAL _UIAlertControllerActionView* _LOGOS_SELF_CONST, SEL, BOOL); static id (*_logos_orig$_ungrouped$_UIInterfaceActionGroupHeaderScrollView$updateConstraints)(_LOGOS_SELF_TYPE_NORMAL _UIInterfaceActionGroupHeaderScrollView* _LOGOS_SELF_CONST, SEL); static id _logos_method$_ungrouped$_UIInterfaceActionGroupHeaderScrollView$updateConstraints(_LOGOS_SELF_TYPE_NORMAL _UIInterfaceActionGroupHeaderScrollView* _LOGOS_SELF_CONST, SEL); static void (*_logos_orig$_ungrouped$SpringBoard$applicationDidFinishLaunching$)(_LOGOS_SELF_TYPE_NORMAL SpringBoard* _LOGOS_SELF_CONST, SEL, id); static void _logos_method$_ungrouped$SpringBoard$applicationDidFinishLaunching$(_LOGOS_SELF_TYPE_NORMAL SpringBoard* _LOGOS_SELF_CONST, SEL, id); static void (*_logos_orig$_ungrouped$_UIAlertControlleriOSActionSheetCancelBackgroundView$setHighlighted$)(_LOGOS_SELF_TYPE_NORMAL _UIAlertControlleriOSActionSheetCancelBackgroundView* _LOGOS_SELF_CONST, SEL, BOOL); static void _logos_method$_ungrouped$_UIAlertControlleriOSActionSheetCancelBackgroundView$setHighlighted$(_LOGOS_SELF_TYPE_NORMAL _UIAlertControlleriOSActionSheetCancelBackgroundView* _LOGOS_SELF_CONST, SEL, BOOL); 
 
 #line 349 "Tweak.xm"
