@@ -124,6 +124,7 @@ BOOL useInHapticTouchMenus;
 		(screenRect.size.width - 40),
 		messageLabel.frame.size.height
 	)];
+	float buttonHeightLimit = rollingHeight + messageLabel.frame.size.height + 10;
 	[[self view] addSubview:messageLabel];
 	if ((int)[[[self origAlertController] actions] count] % 2) {
 		rollingHeight = screenRect.size.height - 5;
@@ -162,6 +163,27 @@ BOOL useInHapticTouchMenus;
 			[customActionButton setTitleColor:[UIColor cscp_colorFromHexString:@"FF000000"] forState:UIControlStateNormal];
 			[[self view] addSubview:customActionButton];
 		}
+	}
+	if (rollingHeight < buttonHeightLimit){
+			float correctionAmount = buttonHeightLimit - rollingHeight;
+			[backgroundView setFrame:CGRectMake(
+				backgroundView.frame.origin.x,
+				(backgroundView.frame.origin.y - correctionAmount),
+				backgroundView.frame.size.width,
+				(backgroundView.frame.size.height + correctionAmount)
+			)];
+			[titleLabel setFrame:CGRectMake(
+				titleLabel.frame.origin.x,
+				(titleLabel.frame.origin.y - correctionAmount),
+				titleLabel.frame.size.width,
+				titleLabel.frame.size.height
+			)];
+			[messageLabel setFrame:CGRectMake(
+				messageLabel.frame.origin.x,
+				(messageLabel.frame.origin.y - correctionAmount),
+				messageLabel.frame.size.width,
+				messageLabel.frame.size.height
+			)];
 	}
 }
 
@@ -346,10 +368,10 @@ BOOL useInHapticTouchMenus;
 #define _LOGOS_RETURN_RETAINED
 #endif
 
-@class UIAlertController; @class _UIInterfaceActionVibrantSeparatorView; @class _UIDimmingKnockoutBackdropView; @class _UIAlertControlleriOSActionSheetCancelBackgroundView; @class _UIAlertControllerActionView; @class UIViewController; @class _UIInterfaceActionGroupHeaderScrollView; @class SpringBoard; 
+@class UIViewController; @class SpringBoard; @class UIAlertController; @class _UIDimmingKnockoutBackdropView; @class _UIAlertControlleriOSActionSheetCancelBackgroundView; @class _UIInterfaceActionGroupHeaderScrollView; @class _UIInterfaceActionVibrantSeparatorView; @class _UIAlertControllerActionView; 
 static void (*_logos_orig$_ungrouped$UIViewController$presentViewController$animated$completion$)(_LOGOS_SELF_TYPE_NORMAL UIViewController* _LOGOS_SELF_CONST, SEL, id, BOOL, id); static void _logos_method$_ungrouped$UIViewController$presentViewController$animated$completion$(_LOGOS_SELF_TYPE_NORMAL UIViewController* _LOGOS_SELF_CONST, SEL, id, BOOL, id); static void (*_logos_orig$_ungrouped$UIAlertController$viewWillAppear$)(_LOGOS_SELF_TYPE_NORMAL UIAlertController* _LOGOS_SELF_CONST, SEL, BOOL); static void _logos_method$_ungrouped$UIAlertController$viewWillAppear$(_LOGOS_SELF_TYPE_NORMAL UIAlertController* _LOGOS_SELF_CONST, SEL, BOOL); static void (*_logos_orig$_ungrouped$_UIDimmingKnockoutBackdropView$setBounds$)(_LOGOS_SELF_TYPE_NORMAL _UIDimmingKnockoutBackdropView* _LOGOS_SELF_CONST, SEL, CGRect); static void _logos_method$_ungrouped$_UIDimmingKnockoutBackdropView$setBounds$(_LOGOS_SELF_TYPE_NORMAL _UIDimmingKnockoutBackdropView* _LOGOS_SELF_CONST, SEL, CGRect); static void (*_logos_orig$_ungrouped$_UIInterfaceActionVibrantSeparatorView$_setupEffectView)(_LOGOS_SELF_TYPE_NORMAL _UIInterfaceActionVibrantSeparatorView* _LOGOS_SELF_CONST, SEL); static void _logos_method$_ungrouped$_UIInterfaceActionVibrantSeparatorView$_setupEffectView(_LOGOS_SELF_TYPE_NORMAL _UIInterfaceActionVibrantSeparatorView* _LOGOS_SELF_CONST, SEL); static void (*_logos_orig$_ungrouped$_UIAlertControllerActionView$_updateStyle)(_LOGOS_SELF_TYPE_NORMAL _UIAlertControllerActionView* _LOGOS_SELF_CONST, SEL); static void _logos_method$_ungrouped$_UIAlertControllerActionView$_updateStyle(_LOGOS_SELF_TYPE_NORMAL _UIAlertControllerActionView* _LOGOS_SELF_CONST, SEL); static void (*_logos_orig$_ungrouped$_UIAlertControllerActionView$setHighlighted$)(_LOGOS_SELF_TYPE_NORMAL _UIAlertControllerActionView* _LOGOS_SELF_CONST, SEL, BOOL); static void _logos_method$_ungrouped$_UIAlertControllerActionView$setHighlighted$(_LOGOS_SELF_TYPE_NORMAL _UIAlertControllerActionView* _LOGOS_SELF_CONST, SEL, BOOL); static id (*_logos_orig$_ungrouped$_UIInterfaceActionGroupHeaderScrollView$updateConstraints)(_LOGOS_SELF_TYPE_NORMAL _UIInterfaceActionGroupHeaderScrollView* _LOGOS_SELF_CONST, SEL); static id _logos_method$_ungrouped$_UIInterfaceActionGroupHeaderScrollView$updateConstraints(_LOGOS_SELF_TYPE_NORMAL _UIInterfaceActionGroupHeaderScrollView* _LOGOS_SELF_CONST, SEL); static void (*_logos_orig$_ungrouped$SpringBoard$applicationDidFinishLaunching$)(_LOGOS_SELF_TYPE_NORMAL SpringBoard* _LOGOS_SELF_CONST, SEL, id); static void _logos_method$_ungrouped$SpringBoard$applicationDidFinishLaunching$(_LOGOS_SELF_TYPE_NORMAL SpringBoard* _LOGOS_SELF_CONST, SEL, id); static void (*_logos_orig$_ungrouped$_UIAlertControlleriOSActionSheetCancelBackgroundView$setHighlighted$)(_LOGOS_SELF_TYPE_NORMAL _UIAlertControlleriOSActionSheetCancelBackgroundView* _LOGOS_SELF_CONST, SEL, BOOL); static void _logos_method$_ungrouped$_UIAlertControlleriOSActionSheetCancelBackgroundView$setHighlighted$(_LOGOS_SELF_TYPE_NORMAL _UIAlertControlleriOSActionSheetCancelBackgroundView* _LOGOS_SELF_CONST, SEL, BOOL); 
 
-#line 327 "Tweak.xm"
+#line 349 "Tweak.xm"
 
 
 static void _logos_method$_ungrouped$UIViewController$presentViewController$animated$completion$(_LOGOS_SELF_TYPE_NORMAL UIViewController* _LOGOS_SELF_CONST __unused self, SEL __unused _cmd, id arg1, BOOL arg2, id arg3){
@@ -584,7 +606,7 @@ static void _logos_method$_ungrouped$_UIAlertControlleriOSActionSheetCancelBackg
 
 
 
-static __attribute__((constructor)) void _logosLocalCtor_a30047b3(int __unused argc, char __unused **argv, char __unused **envp) {
+static __attribute__((constructor)) void _logosLocalCtor_0dd0a84d(int __unused argc, char __unused **argv, char __unused **envp) {
     if ([[[[NSProcessInfo processInfo] arguments] objectAtIndex:0] containsString:@"/Application"] || [[[[NSProcessInfo processInfo] arguments] objectAtIndex:0] containsString:@"SpringBoard.app"]) {
         HBPreferences *preferences = [[HBPreferences alloc] initWithIdentifier:@"com.samgisaninja.snellprefs"];
         [preferences registerBool:&enabled default:TRUE forKey:@"isEnabled"];

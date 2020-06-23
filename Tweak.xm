@@ -123,6 +123,7 @@ BOOL useInHapticTouchMenus;
 		(screenRect.size.width - 40),
 		messageLabel.frame.size.height
 	)];
+	float buttonHeightLimit = rollingHeight + messageLabel.frame.size.height + 10;
 	[[self view] addSubview:messageLabel];
 	if ((int)[[[self origAlertController] actions] count] % 2) {
 		rollingHeight = screenRect.size.height - 5;
@@ -161,6 +162,27 @@ BOOL useInHapticTouchMenus;
 			[customActionButton setTitleColor:[UIColor cscp_colorFromHexString:@"FF000000"] forState:UIControlStateNormal];
 			[[self view] addSubview:customActionButton];
 		}
+	}
+	if (rollingHeight < buttonHeightLimit){
+			float correctionAmount = buttonHeightLimit - rollingHeight;
+			[backgroundView setFrame:CGRectMake(
+				backgroundView.frame.origin.x,
+				(backgroundView.frame.origin.y - correctionAmount),
+				backgroundView.frame.size.width,
+				(backgroundView.frame.size.height + correctionAmount)
+			)];
+			[titleLabel setFrame:CGRectMake(
+				titleLabel.frame.origin.x,
+				(titleLabel.frame.origin.y - correctionAmount),
+				titleLabel.frame.size.width,
+				titleLabel.frame.size.height
+			)];
+			[messageLabel setFrame:CGRectMake(
+				messageLabel.frame.origin.x,
+				(messageLabel.frame.origin.y - correctionAmount),
+				messageLabel.frame.size.width,
+				messageLabel.frame.size.height
+			)];
 	}
 }
 
