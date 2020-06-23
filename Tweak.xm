@@ -33,6 +33,13 @@ double backdropCornerRadius;
 BOOL hideCancelViewBackdrop;
 BOOL useInHapticTouchMenus;
 BOOL allowPresentHook;
+NSString *airpodsBackgroundColor;
+NSString *airpodsTitleColor;
+NSString *airpodsMessageColor;
+NSString *customAirpodsActionTextColor;
+NSString *airpodsDefaultActionColor;
+NSString *airpodsCancelActionColor;
+NSString *airpodsDestructiveActionColor;
 
 @interface _UIInterfaceActionGroupHeaderScrollView : UIView
 @end
@@ -93,7 +100,7 @@ BOOL allowPresentHook;
 	)];
 	[backgroundView setClipsToBounds:TRUE];
 	[[backgroundView layer] setCornerRadius:30];
-	[backgroundView setBackgroundColor:[UIColor cscp_colorFromHexString:@"FFFFFFFF"]];
+	[backgroundView setBackgroundColor:[UIColor cscp_colorFromHexString:airpodsBackgroundColor]];
 	[[self view] addSubview:backgroundView];
 	UILabel *titleLabel = [[UILabel alloc] init];
 	[titleLabel setText:[[self origAlertController] title]];
@@ -101,7 +108,7 @@ BOOL allowPresentHook;
 	[titleLabel setNumberOfLines:0];
 	[titleLabel setLineBreakMode:NSLineBreakByWordWrapping];
 	[titleLabel sizeToFit];
-	[titleLabel setTextColor:[UIColor cscp_colorFromHexString:@"FF000000"]];
+	[titleLabel setTextColor:[UIColor cscp_colorFromHexString:airpodsTitleColor]];
 	float rollingHeight = (screenRect.size.height - 295);
 	[titleLabel setFrame:CGRectMake(
 		20,
@@ -117,7 +124,7 @@ BOOL allowPresentHook;
 	[messageLabel setFont:[UIFont systemFontOfSize:20]];
 	[messageLabel setNumberOfLines:0];
 	[messageLabel setLineBreakMode:NSLineBreakByWordWrapping];
-	[messageLabel setTextColor:[UIColor cscp_colorFromHexString:@"FF000000"]];
+	[messageLabel setTextColor:[UIColor cscp_colorFromHexString:airpodsMessageColor]];
 	[messageLabel setFrame:CGRectMake(
 		20,
 		rollingHeight,
@@ -139,8 +146,14 @@ BOOL allowPresentHook;
 			[customActionButton setFrame:CGRectMake(20, rollingHeight, (screenRect.size.width - 40), 50)];
 			[customActionButton setClipsToBounds:TRUE];
 			[[customActionButton layer] setCornerRadius:10];
-			[customActionButton setBackgroundColor:[UIColor cscp_colorFromHexString:@"FFD1CEDC"]];
-			[customActionButton setTitleColor:[UIColor cscp_colorFromHexString:@"FF000000"] forState:UIControlStateNormal];
+			if ([action style] == UIAlertActionStyleDefault){
+				[customActionButton setBackgroundColor:[UIColor cscp_colorFromHexString:airpodsDefaultActionColor]];
+			} else if ([action style] == UIAlertActionStyleCancel) {
+				[customActionButton setBackgroundColor:[UIColor cscp_colorFromHexString:airpodsCancelActionColor]];
+			} else if ([action style] == UIAlertActionStyleDestructive) {
+				[customActionButton setBackgroundColor:[UIColor cscp_colorFromHexString:airpodsDestructiveActionColor]];
+			}
+			[customActionButton setTitleColor:[UIColor cscp_colorFromHexString:customAirpodsActionTextColor] forState:UIControlStateNormal];
 			[[self view] addSubview:customActionButton];
 		}
 	} else {
@@ -160,8 +173,14 @@ BOOL allowPresentHook;
 			[customActionButton setFrame:CGRectMake(rollingX, rollingHeight, (screenRect.size.width/2 - 20), 50)];
 			[customActionButton setClipsToBounds:TRUE];
 			[[customActionButton layer] setCornerRadius:10];
-			[customActionButton setBackgroundColor:[UIColor cscp_colorFromHexString:@"FFD1CEDC"]];
-			[customActionButton setTitleColor:[UIColor cscp_colorFromHexString:@"FF000000"] forState:UIControlStateNormal];
+			if ([action style] == UIAlertActionStyleDefault){
+				[customActionButton setBackgroundColor:[UIColor cscp_colorFromHexString:airpodsDefaultActionColor]];
+			} else if ([action style] == UIAlertActionStyleCancel) {
+				[customActionButton setBackgroundColor:[UIColor cscp_colorFromHexString:airpodsCancelActionColor]];
+			} else if ([action style] == UIAlertActionStyleDestructive) {
+				[customActionButton setBackgroundColor:[UIColor cscp_colorFromHexString:airpodsDestructiveActionColor]];
+			}
+			[customActionButton setTitleColor:[UIColor cscp_colorFromHexString:customAirpodsActionTextColor] forState:UIControlStateNormal];
 			[[self view] addSubview:customActionButton];
 		}
 	}
@@ -627,6 +646,13 @@ BOOL allowPresentHook;
         [preferences registerDouble:&backdropCornerRadius default:10.0f forKey:@"backdropCornerRadius"];
         [preferences registerBool:&hideCancelViewBackdrop default:TRUE forKey:@"hideCancelViewBackdrop"];
         [preferences registerBool:&useInHapticTouchMenus default:TRUE forKey:@"useInHapticTouchMenus"];
+		[preferences registerObject:&airpodsBackgroundColor default:@"FFFFFFFF" forKey:@"airpodsBackgroundColor"];
+		[preferences registerObject:&airpodsTitleColor default:@"000000" forKey:@"airpodsTitleColor"];
+		[preferences registerObject:&airpodsMessageColor default:@"000000" forKey:@"airpodsMessageColor"];
+		[preferences registerObject:&customAirpodsActionTextColor default:@"000000" forKey:@"customAirpodsActionTextColor"];
+		[preferences registerObject:&airpodsDefaultActionColor default:@"FFD1CEDC" forKey:@"airpodsDefaultActionColor"];
+		[preferences registerObject:&airpodsCancelActionColor default:@"FFD1CEDC" forKey:@"airpodsCancelActionColor"];
+		[preferences registerObject:&airpodsDestructiveActionColor default:@"55AA0000" forKey:@"airpodsDestructiveActionColor"];
 		allowPresentHook = TRUE;
         %init;
     }
