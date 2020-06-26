@@ -250,6 +250,13 @@ NSString *tvDestructiveActionColor;
 	[titleLabel setNumberOfLines:0];
 	[titleLabel setTextColor:[UIColor cscp_colorFromHexString:tvTitleColor]];
 	[titleLabel setLineBreakMode:NSLineBreakByWordWrapping];
+	[titleLabel setTextAlignment:NSTextAlignmentCenter];
+	[titleLabel setFrame:CGRectMake(
+		0,
+		0,
+		screenRect.size.width,
+		9999
+	)];
 	[titleLabel sizeToFit];
 	UILabel *messageLabel = [[UILabel alloc] init];
 	[messageLabel setText:[[self origAlertController] message]];
@@ -257,6 +264,13 @@ NSString *tvDestructiveActionColor;
 	[messageLabel setNumberOfLines:0];
 	[messageLabel setTextColor:[UIColor cscp_colorFromHexString:tvMessageColor]];
 	[messageLabel setLineBreakMode:NSLineBreakByWordWrapping];
+	[messageLabel setTextAlignment:NSTextAlignmentCenter];
+	[messageLabel setFrame:CGRectMake(
+		0,
+		0,
+		screenRect.size.width,
+		9999
+	)];
 	[messageLabel sizeToFit];
 	NSMutableArray *actionButtons = [[NSMutableArray alloc] init];
 	for (int a = 0; a < [[[self origAlertController] actions] count]; a++){
@@ -417,10 +431,10 @@ NSString *tvDestructiveActionColor;
 #define _LOGOS_RETURN_RETAINED
 #endif
 
-@class _UIDimmingKnockoutBackdropView; @class _UIInterfaceActionGroupHeaderScrollView; @class SpringBoard; @class _UIAlertControllerActionView; @class _UIAlertControlleriOSActionSheetCancelBackgroundView; @class UIAlertController; @class _UIInterfaceActionVibrantSeparatorView; 
+@class SpringBoard; @class UIAlertController; @class _UIAlertControllerActionView; @class _UIAlertControlleriOSActionSheetCancelBackgroundView; @class _UIInterfaceActionGroupHeaderScrollView; @class _UIDimmingKnockoutBackdropView; @class _UIInterfaceActionVibrantSeparatorView; 
 static void (*_logos_orig$_ungrouped$UIAlertController$viewWillAppear$)(_LOGOS_SELF_TYPE_NORMAL UIAlertController* _LOGOS_SELF_CONST, SEL, BOOL); static void _logos_method$_ungrouped$UIAlertController$viewWillAppear$(_LOGOS_SELF_TYPE_NORMAL UIAlertController* _LOGOS_SELF_CONST, SEL, BOOL); static void (*_logos_orig$_ungrouped$_UIDimmingKnockoutBackdropView$setBounds$)(_LOGOS_SELF_TYPE_NORMAL _UIDimmingKnockoutBackdropView* _LOGOS_SELF_CONST, SEL, CGRect); static void _logos_method$_ungrouped$_UIDimmingKnockoutBackdropView$setBounds$(_LOGOS_SELF_TYPE_NORMAL _UIDimmingKnockoutBackdropView* _LOGOS_SELF_CONST, SEL, CGRect); static void (*_logos_orig$_ungrouped$_UIInterfaceActionVibrantSeparatorView$_setupEffectView)(_LOGOS_SELF_TYPE_NORMAL _UIInterfaceActionVibrantSeparatorView* _LOGOS_SELF_CONST, SEL); static void _logos_method$_ungrouped$_UIInterfaceActionVibrantSeparatorView$_setupEffectView(_LOGOS_SELF_TYPE_NORMAL _UIInterfaceActionVibrantSeparatorView* _LOGOS_SELF_CONST, SEL); static void (*_logos_orig$_ungrouped$_UIAlertControllerActionView$_updateStyle)(_LOGOS_SELF_TYPE_NORMAL _UIAlertControllerActionView* _LOGOS_SELF_CONST, SEL); static void _logos_method$_ungrouped$_UIAlertControllerActionView$_updateStyle(_LOGOS_SELF_TYPE_NORMAL _UIAlertControllerActionView* _LOGOS_SELF_CONST, SEL); static void (*_logos_orig$_ungrouped$_UIAlertControllerActionView$setHighlighted$)(_LOGOS_SELF_TYPE_NORMAL _UIAlertControllerActionView* _LOGOS_SELF_CONST, SEL, BOOL); static void _logos_method$_ungrouped$_UIAlertControllerActionView$setHighlighted$(_LOGOS_SELF_TYPE_NORMAL _UIAlertControllerActionView* _LOGOS_SELF_CONST, SEL, BOOL); static id (*_logos_orig$_ungrouped$_UIInterfaceActionGroupHeaderScrollView$updateConstraints)(_LOGOS_SELF_TYPE_NORMAL _UIInterfaceActionGroupHeaderScrollView* _LOGOS_SELF_CONST, SEL); static id _logos_method$_ungrouped$_UIInterfaceActionGroupHeaderScrollView$updateConstraints(_LOGOS_SELF_TYPE_NORMAL _UIInterfaceActionGroupHeaderScrollView* _LOGOS_SELF_CONST, SEL); static void (*_logos_orig$_ungrouped$SpringBoard$applicationDidFinishLaunching$)(_LOGOS_SELF_TYPE_NORMAL SpringBoard* _LOGOS_SELF_CONST, SEL, id); static void _logos_method$_ungrouped$SpringBoard$applicationDidFinishLaunching$(_LOGOS_SELF_TYPE_NORMAL SpringBoard* _LOGOS_SELF_CONST, SEL, id); static void (*_logos_orig$_ungrouped$_UIAlertControlleriOSActionSheetCancelBackgroundView$setHighlighted$)(_LOGOS_SELF_TYPE_NORMAL _UIAlertControlleriOSActionSheetCancelBackgroundView* _LOGOS_SELF_CONST, SEL, BOOL); static void _logos_method$_ungrouped$_UIAlertControlleriOSActionSheetCancelBackgroundView$setHighlighted$(_LOGOS_SELF_TYPE_NORMAL _UIAlertControlleriOSActionSheetCancelBackgroundView* _LOGOS_SELF_CONST, SEL, BOOL); 
 
-#line 398 "Tweak.xm"
+#line 412 "Tweak.xm"
 
 
 static void _logos_method$_ungrouped$UIAlertController$viewWillAppear$(_LOGOS_SELF_TYPE_NORMAL UIAlertController* _LOGOS_SELF_CONST __unused self, SEL __unused _cmd, BOOL arg1){
@@ -636,7 +650,7 @@ static void _logos_method$_ungrouped$_UIAlertControlleriOSActionSheetCancelBackg
 
 
 
-static __attribute__((constructor)) void _logosLocalCtor_b281c984(int __unused argc, char __unused **argv, char __unused **envp) {
+static __attribute__((constructor)) void _logosLocalCtor_c5666e03(int __unused argc, char __unused **argv, char __unused **envp) {
 	if ([[[[NSProcessInfo processInfo] arguments] objectAtIndex:0] containsString:@"/Application"] || [[[[NSProcessInfo processInfo] arguments] objectAtIndex:0] containsString:@"SpringBoard.app"]) {
 		HBPreferences *preferences = [[HBPreferences alloc] initWithIdentifier:@"com.samgisaninja.snellprefs"];
 		[preferences registerBool:&enabled default:TRUE forKey:@"isEnabled"];

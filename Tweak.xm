@@ -249,6 +249,13 @@ NSString *tvDestructiveActionColor;
 	[titleLabel setNumberOfLines:0];
 	[titleLabel setTextColor:[UIColor cscp_colorFromHexString:tvTitleColor]];
 	[titleLabel setLineBreakMode:NSLineBreakByWordWrapping];
+	[titleLabel setTextAlignment:NSTextAlignmentCenter];
+	[titleLabel setFrame:CGRectMake(
+		0,
+		0,
+		screenRect.size.width,
+		9999
+	)];
 	[titleLabel sizeToFit];
 	UILabel *messageLabel = [[UILabel alloc] init];
 	[messageLabel setText:[[self origAlertController] message]];
@@ -256,6 +263,13 @@ NSString *tvDestructiveActionColor;
 	[messageLabel setNumberOfLines:0];
 	[messageLabel setTextColor:[UIColor cscp_colorFromHexString:tvMessageColor]];
 	[messageLabel setLineBreakMode:NSLineBreakByWordWrapping];
+	[messageLabel setTextAlignment:NSTextAlignmentCenter];
+	[messageLabel setFrame:CGRectMake(
+		0,
+		0,
+		screenRect.size.width,
+		9999
+	)];
 	[messageLabel sizeToFit];
 	NSMutableArray *actionButtons = [[NSMutableArray alloc] init];
 	for (int a = 0; a < [[[self origAlertController] actions] count]; a++){
