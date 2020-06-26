@@ -14,5 +14,4 @@ export TARGET = iphone:13.0:12.0
 snell_LDFLAGS += -lCSColorPicker
 
 include $(THEOS_MAKE_PATH)/tweak.mk
-SUBPROJECTS += snellprefs
 include $(THEOS_MAKE_PATH)/aggregate.mk
