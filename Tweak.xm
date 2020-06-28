@@ -305,10 +305,17 @@ NSString *tvDestructiveActionColor;
 	rollingHeight += messageLabel.frame.size.height;
 	[[blurView contentView] addSubview:messageLabel];
 	rollingHeight += 10;
-	for (UIButton *customActionButton in actionButtons){
-		rollingHeight += 10;
+	if ((int)[[[self origAlertController] actions] count] == 2) {
+		rollingHeight +=10;
+		UIButton *customActionButton = [actionButtons objectAtIndex:0];
+		[customActionButton setFrame:CGRectMake(
+			0,
+			0,
+			customActionButton.frame.size.width/2,
+			customActionButton.frame.size.height
+		)];
 		UIView *buttonBackgroundView = [[UIView alloc] initWithFrame:CGRectMake(
-			(((screenRect.size.width)/2) - (customActionButton.frame.size.width/2)),
+			(((screenRect.size.width)/2) - ((customActionButton.frame.size.width) + 10)),
 			rollingHeight,
 			customActionButton.frame.size.width,
 			customActionButton.frame.size.height
@@ -319,7 +326,6 @@ NSString *tvDestructiveActionColor;
 			customActionButton.frame.size.width,
 			customActionButton.frame.size.height
 		)];
-		rollingHeight += customActionButton.frame.size.height;
 		for (UIAlertAction *action in [[self origAlertController] actions]){
 			if ([[action title] isEqualToString:[customActionButton currentTitle]]){
 				if ([action style] == UIAlertActionStyleDefault){
@@ -335,6 +341,72 @@ NSString *tvDestructiveActionColor;
 		[[buttonBackgroundView layer] setCornerRadius:10];
 		[[blurView contentView] addSubview:buttonBackgroundView];
 		[buttonBackgroundView addSubview:customActionButton];
+		UIButton *secondCustomActionButton = [actionButtons objectAtIndex:1];
+		[secondCustomActionButton setFrame:CGRectMake(
+			0,
+			0,
+			secondCustomActionButton.frame.size.width/2,
+			secondCustomActionButton.frame.size.height
+		)];
+		UIView *secondButtonBackgroundView = [[UIView alloc] initWithFrame:CGRectMake(
+			(((screenRect.size.width)/2) + 10),
+			rollingHeight,
+			secondCustomActionButton.frame.size.width,
+			secondCustomActionButton.frame.size.height
+		)];
+		[secondCustomActionButton setFrame:CGRectMake(
+			0,
+			0,
+			secondCustomActionButton.frame.size.width,
+			secondCustomActionButton.frame.size.height
+		)];
+		for (UIAlertAction *action in [[self origAlertController] actions]){
+			if ([[action title] isEqualToString:[secondCustomActionButton currentTitle]]){
+				if ([action style] == UIAlertActionStyleDefault){
+					[secondButtonBackgroundView setBackgroundColor:[UIColor cscp_colorFromHexString:tvDefaultActionColor]];
+				} else if ([action style] == UIAlertActionStyleCancel) {
+					[secondButtonBackgroundView setBackgroundColor:[UIColor cscp_colorFromHexString:tvCancelActionColor]];
+				} else if ([action style] == UIAlertActionStyleDestructive) {
+					[secondButtonBackgroundView setBackgroundColor:[UIColor cscp_colorFromHexString:tvDestructiveActionColor]];
+				}
+			}
+		}
+		[secondButtonBackgroundView setClipsToBounds:TRUE];
+		[[secondButtonBackgroundView layer] setCornerRadius:10];
+		[[blurView contentView] addSubview:secondButtonBackgroundView];
+		[secondButtonBackgroundView addSubview:secondCustomActionButton];
+	} else {
+		for (UIButton *customActionButton in actionButtons) {
+			rollingHeight += 10;
+			UIView *buttonBackgroundView = [[UIView alloc] initWithFrame:CGRectMake(
+				(((screenRect.size.width)/2) - (customActionButton.frame.size.width/2)),
+				rollingHeight,
+				customActionButton.frame.size.width,
+				customActionButton.frame.size.height
+			)];
+			[customActionButton setFrame:CGRectMake(
+				0,
+				0,
+				customActionButton.frame.size.width,
+				customActionButton.frame.size.height
+			)];
+			rollingHeight += customActionButton.frame.size.height;
+			for (UIAlertAction *action in [[self origAlertController] actions]){
+				if ([[action title] isEqualToString:[customActionButton currentTitle]]){
+					if ([action style] == UIAlertActionStyleDefault){
+						[buttonBackgroundView setBackgroundColor:[UIColor cscp_colorFromHexString:tvDefaultActionColor]];
+					} else if ([action style] == UIAlertActionStyleCancel) {
+						[buttonBackgroundView setBackgroundColor:[UIColor cscp_colorFromHexString:tvCancelActionColor]];
+					} else if ([action style] == UIAlertActionStyleDestructive) {
+						[buttonBackgroundView setBackgroundColor:[UIColor cscp_colorFromHexString:tvDestructiveActionColor]];
+					}
+				}
+			}
+			[buttonBackgroundView setClipsToBounds:TRUE];
+			[[buttonBackgroundView layer] setCornerRadius:10];
+			[[blurView contentView] addSubview:buttonBackgroundView];
+			[buttonBackgroundView addSubview:customActionButton];
+		}
 	}
 }
 
@@ -471,19 +543,21 @@ NSString *tvDestructiveActionColor;
 		}
 		[[self _foregroundView] setClipsToBounds:TRUE];
 		[[[self _foregroundView] layer] setCornerRadius:backdropCornerRadius];
-	} else if (enabled && themeMode == 1){
+	} else if (enabled && themeMode == 1 && [[self textFields] count] < 1){
 		snellTvViewController *tvAlertController = [[snellTvViewController alloc] init];
 			[tvAlertController setModalPresentationStyle:UIModalPresentationOverFullScreen];
 			[tvAlertController setOrigAlertController:self];
 			[tvAlertController setModalTransitionStyle:UIModalTransitionStyleCrossDissolve];
 			[[self view] setHidden:TRUE];
 			[self presentViewController:tvAlertController animated:TRUE completion:nil];
-	} else if (enabled && themeMode == 2){
+	} else if (enabled && themeMode == 2 && [[self textFields] count] < 1){
 		snellAirpodsViewController *connectAlertController = [[snellAirpodsViewController alloc] init];
 			[connectAlertController setModalPresentationStyle:UIModalPresentationOverFullScreen];
 			[connectAlertController setOrigAlertController:self];
 			[[self view] setHidden:TRUE];
 			[self presentViewController:connectAlertController animated:TRUE completion:nil];
+	} else if (enabled && themeMode == 3 && [[self textFields] count] < 1) {
+
 	}
 	%orig;
 }

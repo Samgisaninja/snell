@@ -306,10 +306,17 @@ NSString *tvDestructiveActionColor;
 	rollingHeight += messageLabel.frame.size.height;
 	[[blurView contentView] addSubview:messageLabel];
 	rollingHeight += 10;
-	for (UIButton *customActionButton in actionButtons){
-		rollingHeight += 10;
+	if ((int)[[[self origAlertController] actions] count] == 2) {
+		rollingHeight +=10;
+		UIButton *customActionButton = [actionButtons objectAtIndex:0];
+		[customActionButton setFrame:CGRectMake(
+			0,
+			0,
+			customActionButton.frame.size.width/2,
+			customActionButton.frame.size.height
+		)];
 		UIView *buttonBackgroundView = [[UIView alloc] initWithFrame:CGRectMake(
-			(((screenRect.size.width)/2) - (customActionButton.frame.size.width/2)),
+			(((screenRect.size.width)/2) - ((customActionButton.frame.size.width) + 10)),
 			rollingHeight,
 			customActionButton.frame.size.width,
 			customActionButton.frame.size.height
@@ -320,7 +327,6 @@ NSString *tvDestructiveActionColor;
 			customActionButton.frame.size.width,
 			customActionButton.frame.size.height
 		)];
-		rollingHeight += customActionButton.frame.size.height;
 		for (UIAlertAction *action in [[self origAlertController] actions]){
 			if ([[action title] isEqualToString:[customActionButton currentTitle]]){
 				if ([action style] == UIAlertActionStyleDefault){
@@ -336,6 +342,72 @@ NSString *tvDestructiveActionColor;
 		[[buttonBackgroundView layer] setCornerRadius:10];
 		[[blurView contentView] addSubview:buttonBackgroundView];
 		[buttonBackgroundView addSubview:customActionButton];
+		UIButton *secondCustomActionButton = [actionButtons objectAtIndex:1];
+		[secondCustomActionButton setFrame:CGRectMake(
+			0,
+			0,
+			secondCustomActionButton.frame.size.width/2,
+			secondCustomActionButton.frame.size.height
+		)];
+		UIView *secondButtonBackgroundView = [[UIView alloc] initWithFrame:CGRectMake(
+			(((screenRect.size.width)/2) + 10),
+			rollingHeight,
+			secondCustomActionButton.frame.size.width,
+			secondCustomActionButton.frame.size.height
+		)];
+		[secondCustomActionButton setFrame:CGRectMake(
+			0,
+			0,
+			secondCustomActionButton.frame.size.width,
+			secondCustomActionButton.frame.size.height
+		)];
+		for (UIAlertAction *action in [[self origAlertController] actions]){
+			if ([[action title] isEqualToString:[secondCustomActionButton currentTitle]]){
+				if ([action style] == UIAlertActionStyleDefault){
+					[secondButtonBackgroundView setBackgroundColor:[UIColor cscp_colorFromHexString:tvDefaultActionColor]];
+				} else if ([action style] == UIAlertActionStyleCancel) {
+					[secondButtonBackgroundView setBackgroundColor:[UIColor cscp_colorFromHexString:tvCancelActionColor]];
+				} else if ([action style] == UIAlertActionStyleDestructive) {
+					[secondButtonBackgroundView setBackgroundColor:[UIColor cscp_colorFromHexString:tvDestructiveActionColor]];
+				}
+			}
+		}
+		[secondButtonBackgroundView setClipsToBounds:TRUE];
+		[[secondButtonBackgroundView layer] setCornerRadius:10];
+		[[blurView contentView] addSubview:secondButtonBackgroundView];
+		[secondButtonBackgroundView addSubview:secondCustomActionButton];
+	} else {
+		for (UIButton *customActionButton in actionButtons) {
+			rollingHeight += 10;
+			UIView *buttonBackgroundView = [[UIView alloc] initWithFrame:CGRectMake(
+				(((screenRect.size.width)/2) - (customActionButton.frame.size.width/2)),
+				rollingHeight,
+				customActionButton.frame.size.width,
+				customActionButton.frame.size.height
+			)];
+			[customActionButton setFrame:CGRectMake(
+				0,
+				0,
+				customActionButton.frame.size.width,
+				customActionButton.frame.size.height
+			)];
+			rollingHeight += customActionButton.frame.size.height;
+			for (UIAlertAction *action in [[self origAlertController] actions]){
+				if ([[action title] isEqualToString:[customActionButton currentTitle]]){
+					if ([action style] == UIAlertActionStyleDefault){
+						[buttonBackgroundView setBackgroundColor:[UIColor cscp_colorFromHexString:tvDefaultActionColor]];
+					} else if ([action style] == UIAlertActionStyleCancel) {
+						[buttonBackgroundView setBackgroundColor:[UIColor cscp_colorFromHexString:tvCancelActionColor]];
+					} else if ([action style] == UIAlertActionStyleDestructive) {
+						[buttonBackgroundView setBackgroundColor:[UIColor cscp_colorFromHexString:tvDestructiveActionColor]];
+					}
+				}
+			}
+			[buttonBackgroundView setClipsToBounds:TRUE];
+			[[buttonBackgroundView layer] setCornerRadius:10];
+			[[blurView contentView] addSubview:buttonBackgroundView];
+			[buttonBackgroundView addSubview:customActionButton];
+		}
 	}
 }
 
@@ -431,10 +503,10 @@ NSString *tvDestructiveActionColor;
 #define _LOGOS_RETURN_RETAINED
 #endif
 
-@class _UIInterfaceActionVibrantSeparatorView; @class _UIInterfaceActionGroupHeaderScrollView; @class SpringBoard; @class _UIAlertControllerActionView; @class _UIDimmingKnockoutBackdropView; @class UIAlertController; @class _UIAlertControlleriOSActionSheetCancelBackgroundView; 
+@class SpringBoard; @class _UIInterfaceActionVibrantSeparatorView; @class _UIDimmingKnockoutBackdropView; @class _UIAlertControllerActionView; @class _UIAlertControlleriOSActionSheetCancelBackgroundView; @class UIAlertController; @class _UIInterfaceActionGroupHeaderScrollView; 
 static void (*_logos_orig$_ungrouped$UIAlertController$viewWillAppear$)(_LOGOS_SELF_TYPE_NORMAL UIAlertController* _LOGOS_SELF_CONST, SEL, BOOL); static void _logos_method$_ungrouped$UIAlertController$viewWillAppear$(_LOGOS_SELF_TYPE_NORMAL UIAlertController* _LOGOS_SELF_CONST, SEL, BOOL); static void (*_logos_orig$_ungrouped$_UIDimmingKnockoutBackdropView$setBounds$)(_LOGOS_SELF_TYPE_NORMAL _UIDimmingKnockoutBackdropView* _LOGOS_SELF_CONST, SEL, CGRect); static void _logos_method$_ungrouped$_UIDimmingKnockoutBackdropView$setBounds$(_LOGOS_SELF_TYPE_NORMAL _UIDimmingKnockoutBackdropView* _LOGOS_SELF_CONST, SEL, CGRect); static void (*_logos_orig$_ungrouped$_UIInterfaceActionVibrantSeparatorView$_setupEffectView)(_LOGOS_SELF_TYPE_NORMAL _UIInterfaceActionVibrantSeparatorView* _LOGOS_SELF_CONST, SEL); static void _logos_method$_ungrouped$_UIInterfaceActionVibrantSeparatorView$_setupEffectView(_LOGOS_SELF_TYPE_NORMAL _UIInterfaceActionVibrantSeparatorView* _LOGOS_SELF_CONST, SEL); static void (*_logos_orig$_ungrouped$_UIAlertControllerActionView$_updateStyle)(_LOGOS_SELF_TYPE_NORMAL _UIAlertControllerActionView* _LOGOS_SELF_CONST, SEL); static void _logos_method$_ungrouped$_UIAlertControllerActionView$_updateStyle(_LOGOS_SELF_TYPE_NORMAL _UIAlertControllerActionView* _LOGOS_SELF_CONST, SEL); static void (*_logos_orig$_ungrouped$_UIAlertControllerActionView$setHighlighted$)(_LOGOS_SELF_TYPE_NORMAL _UIAlertControllerActionView* _LOGOS_SELF_CONST, SEL, BOOL); static void _logos_method$_ungrouped$_UIAlertControllerActionView$setHighlighted$(_LOGOS_SELF_TYPE_NORMAL _UIAlertControllerActionView* _LOGOS_SELF_CONST, SEL, BOOL); static id (*_logos_orig$_ungrouped$_UIInterfaceActionGroupHeaderScrollView$updateConstraints)(_LOGOS_SELF_TYPE_NORMAL _UIInterfaceActionGroupHeaderScrollView* _LOGOS_SELF_CONST, SEL); static id _logos_method$_ungrouped$_UIInterfaceActionGroupHeaderScrollView$updateConstraints(_LOGOS_SELF_TYPE_NORMAL _UIInterfaceActionGroupHeaderScrollView* _LOGOS_SELF_CONST, SEL); static void (*_logos_orig$_ungrouped$SpringBoard$applicationDidFinishLaunching$)(_LOGOS_SELF_TYPE_NORMAL SpringBoard* _LOGOS_SELF_CONST, SEL, id); static void _logos_method$_ungrouped$SpringBoard$applicationDidFinishLaunching$(_LOGOS_SELF_TYPE_NORMAL SpringBoard* _LOGOS_SELF_CONST, SEL, id); static void (*_logos_orig$_ungrouped$_UIAlertControlleriOSActionSheetCancelBackgroundView$setHighlighted$)(_LOGOS_SELF_TYPE_NORMAL _UIAlertControlleriOSActionSheetCancelBackgroundView* _LOGOS_SELF_CONST, SEL, BOOL); static void _logos_method$_ungrouped$_UIAlertControlleriOSActionSheetCancelBackgroundView$setHighlighted$(_LOGOS_SELF_TYPE_NORMAL _UIAlertControlleriOSActionSheetCancelBackgroundView* _LOGOS_SELF_CONST, SEL, BOOL); 
 
-#line 412 "Tweak.xm"
+#line 484 "Tweak.xm"
 
 
 static void _logos_method$_ungrouped$UIAlertController$viewWillAppear$(_LOGOS_SELF_TYPE_NORMAL UIAlertController* _LOGOS_SELF_CONST __unused self, SEL __unused _cmd, BOOL arg1){
@@ -497,19 +569,21 @@ static void _logos_method$_ungrouped$UIAlertController$viewWillAppear$(_LOGOS_SE
 		}
 		[[self _foregroundView] setClipsToBounds:TRUE];
 		[[[self _foregroundView] layer] setCornerRadius:backdropCornerRadius];
-	} else if (enabled && themeMode == 1){
+	} else if (enabled && themeMode == 1 && [[self textFields] count] < 1){
 		snellTvViewController *tvAlertController = [[snellTvViewController alloc] init];
 			[tvAlertController setModalPresentationStyle:UIModalPresentationOverFullScreen];
 			[tvAlertController setOrigAlertController:self];
 			[tvAlertController setModalTransitionStyle:UIModalTransitionStyleCrossDissolve];
 			[[self view] setHidden:TRUE];
 			[self presentViewController:tvAlertController animated:TRUE completion:nil];
-	} else if (enabled && themeMode == 2){
+	} else if (enabled && themeMode == 2 && [[self textFields] count] < 1){
 		snellAirpodsViewController *connectAlertController = [[snellAirpodsViewController alloc] init];
 			[connectAlertController setModalPresentationStyle:UIModalPresentationOverFullScreen];
 			[connectAlertController setOrigAlertController:self];
 			[[self view] setHidden:TRUE];
 			[self presentViewController:connectAlertController animated:TRUE completion:nil];
+	} else if (enabled && themeMode == 3 && [[self textFields] count] < 1) {
+
 	}
 	_logos_orig$_ungrouped$UIAlertController$viewWillAppear$(self, _cmd, arg1);
 }
@@ -650,7 +724,7 @@ static void _logos_method$_ungrouped$_UIAlertControlleriOSActionSheetCancelBackg
 
 
 
-static __attribute__((constructor)) void _logosLocalCtor_c5666e03(int __unused argc, char __unused **argv, char __unused **envp) {
+static __attribute__((constructor)) void _logosLocalCtor_65422caa(int __unused argc, char __unused **argv, char __unused **envp) {
 	if ([[[[NSProcessInfo processInfo] arguments] objectAtIndex:0] containsString:@"/Application"] || [[[[NSProcessInfo processInfo] arguments] objectAtIndex:0] containsString:@"SpringBoard.app"]) {
 		HBPreferences *preferences = [[HBPreferences alloc] initWithIdentifier:@"com.samgisaninja.snellprefs"];
 		[preferences registerBool:&enabled default:TRUE forKey:@"isEnabled"];
